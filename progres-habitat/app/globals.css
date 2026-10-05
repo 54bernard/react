@@ -1,0 +1,221 @@
+@import 'tailwindcss';
+
+/* ------------------------------------------------------------------
+   Direction artistique Progrès Habitat
+   Couleurs reprises du logo : vert-bleu, orange, ardoise.
+   ------------------------------------------------------------------ */
+@theme {
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+
+  --color-brand-50: #eef7f4;
+  --color-brand-100: #d6ede6;
+  --color-brand-200: #acdacc;
+  --color-brand-300: #78c0ab;
+  --color-brand-400: #46a38a;
+  --color-brand-500: #1e846f;
+  --color-brand-600: #176b5a;
+  --color-brand-700: #14574a;
+  --color-brand-800: #12463c;
+  --color-brand-900: #0f3a32;
+
+  --color-accent-50: #fff5eb;
+  --color-accent-100: #ffe6cc;
+  --color-accent-400: #f79a3e;
+  --color-accent-500: #f07a0a;
+  --color-accent-600: #c96305;
+  --color-accent-700: #a14e06;
+
+  --color-ink-50: #f4f6f6;
+  --color-ink-100: #e6eaeb;
+  --color-ink-200: #cdd5d7;
+  --color-ink-300: #a9b5b9;
+  --color-ink-400: #66767c;
+  --color-ink-500: #5b6b71;
+  --color-ink-600: #45545a;
+  --color-ink-700: #33434a;
+  --color-ink-800: #26363d;
+  --color-ink-900: #1a272d;
+  --color-ink-950: #0f191d;
+
+  --color-sand-50: #fbfaf7;
+  --color-sand-100: #f5f2ec;
+  --color-sand-200: #ebe5d9;
+
+  --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
+  --radius-3xl: 1.75rem;
+
+  --shadow-soft: 0 1px 2px rgb(15 25 29 / 0.04), 0 4px 16px -4px rgb(15 25 29 / 0.06);
+  --shadow-lift: 0 2px 4px rgb(15 25 29 / 0.04), 0 16px 40px -12px rgb(15 25 29 / 0.14);
+
+  --animate-shimmer: shimmer 1.6s linear infinite;
+
+  @keyframes shimmer {
+    from {
+      background-position: -400px 0;
+    }
+    to {
+      background-position: 400px 0;
+    }
+  }
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 6rem;
+  }
+
+  body {
+    @apply bg-sand-50 font-sans text-ink-800 antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply text-ink-900;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-brand-500;
+  }
+
+  /* Les éléments de grille ne doivent jamais forcer un débordement horizontal (écrans de 320 px) */
+  :where(ul, ol, div).grid > * {
+    min-width: 0;
+  }
+
+  ::selection {
+    @apply bg-brand-100 text-brand-900;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@utility container-page {
+  width: 100%;
+  margin-inline: auto;
+  max-width: 80rem;
+  padding-inline: 1rem;
+  @media (width >= 40rem) {
+    padding-inline: 1.5rem;
+  }
+  @media (width >= 64rem) {
+    padding-inline: 2rem;
+  }
+}
+
+@utility eyebrow {
+  @apply inline-flex items-center gap-2 text-xs font-semibold tracking-[0.16em] text-brand-600 uppercase;
+}
+
+@utility skeleton {
+  background: linear-gradient(90deg, var(--color-ink-100) 0%, var(--color-ink-50) 50%, var(--color-ink-100) 100%);
+  background-size: 800px 100%;
+  animation: var(--animate-shimmer);
+}
+
+/* Leaflet : intégration aux couleurs du site */
+.leaflet-container {
+  font-family: var(--font-sans);
+  background: var(--color-sand-100);
+}
+.leaflet-popup-content-wrapper {
+  border-radius: 1rem;
+  padding: 0;
+  overflow: hidden;
+  box-shadow: var(--shadow-lift);
+}
+.leaflet-popup-content {
+  margin: 0;
+  width: 240px !important;
+}
+.price-marker {
+  background: transparent;
+  border: 0;
+}
+
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes sheet-in-right {
+  from {
+    transform: translateX(100%);
+  }
+}
+@keyframes sheet-in-left {
+  from {
+    transform: translateX(-100%);
+  }
+}
+@keyframes sheet-in-bottom {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+/* Hauteur du header fixe (+ bandeau de démonstration éventuel) */
+:root {
+  --header-offset: 4.5rem;
+}
+@media (width >= 64rem) {
+  :root {
+    --header-offset: 5rem;
+  }
+}
+html[data-demo] {
+  --header-offset: 6.5rem;
+}
+@media (width >= 64rem) {
+  html[data-demo] {
+    --header-offset: 7rem;
+  }
+}
+
+@utility pt-header {
+  padding-top: var(--header-offset);
+}
+
+@keyframes hero-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
