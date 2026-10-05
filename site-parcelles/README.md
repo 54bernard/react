@@ -4,18 +4,30 @@ Site vitrine (React + Vite) de **Progrès Habitat** (BTP, génie civil et vente 
 
 ## Sections
 
-- **Accueil** : accroche, boutons d'action et chiffres clés
-- **À propos** : présentation et valeurs de l'entreprise
-- **Parcelles** : catalogue filtrable par ville (Ouagadougou, Tenkodogo) et par budget (prix en FCFA, superficie, type de document : ACD, attestation d'attribution, titre foncier)
-- **Services** : vente, accompagnement administratif, bornage, construction, paiement échelonné, service Diaspora
-- **Comment acheter** : les 4 étapes de l'achat
+- Barre d'infos (adresse, téléphone, Facebook) et menu fixe
+- **Accueil** : titre, illustration, barre de recherche (ville, budget) et points forts
+- **À propos**
+- **Parcelles** : catalogue filtrable par ville (Ouagadougou, Tenkodogo) et par budget
+- **Services**
+- **Construction** (BTP & génie civil)
+- **Comment acheter** : les 4 étapes
 - **FAQ**
-- **Contact** : coordonnées et formulaire qui ouvre WhatsApp avec le message pré-rempli (aucun serveur nécessaire)
-- Bouton WhatsApp flottant
+- **Contact** : coordonnées, carte Google Maps et formulaire qui ouvre WhatsApp (aucun serveur nécessaire)
+- Bandeau d'appel à l'action, pied de page et bouton WhatsApp flottant
 
 ## Personnaliser
 
-Toutes les informations (nom de l'entreprise, téléphone, WhatsApp, adresse, parcelles, prix, services, FAQ) se trouvent dans **`src/data.js`**. Les coordonnées sont réelles ; **les parcelles et les prix sont des exemples à remplacer**. Le logo est dans `public/logo.jpg`.
+Toutes les informations se trouvent dans **`src/data.js`**. Les coordonnées sont réelles ; **les parcelles et les prix sont des exemples à remplacer**.
+
+### Ajouter des photos
+
+1. Déposez vos photos dans `public/photos/` (format paysage, idéalement 1600 px de large).
+2. Indiquez leur nom dans `src/data.js` :
+   - `photoAccueil` : grande image de l'accueil ;
+   - `photoConstruction` : photo d'un chantier ;
+   - `photo` de chaque parcelle.
+
+Tant qu'un champ photo est vide, une illustration est affichée à la place.
 
 ## Lancer le site
 

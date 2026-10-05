@@ -1,5 +1,10 @@
 // Toutes les informations modifiables du site sont regroupées ici.
-// Les parcelles listées plus bas sont des exemples à remplacer par les offres réelles.
+//
+// PHOTOS : déposez vos images dans le dossier public/photos/ puis indiquez
+// leur nom dans les champs `photo` ci-dessous (ex. photo: 'photos/saaba.jpg').
+// Tant qu'un champ `photo` est vide, une illustration est affichée à la place.
+//
+// Les parcelles listées plus bas sont des EXEMPLES à remplacer par les offres réelles.
 
 export const entreprise = {
   nom: 'Progrès Habitat',
@@ -10,14 +15,10 @@ export const entreprise = {
   adresse: 'Dassasgho, Ouagadougou, Burkina Faso',
   zones: 'Ouagadougou et Tenkodogo',
   facebook: 'https://www.facebook.com/share/19aSfUwzeb/',
+  carte: 'https://maps.google.com/maps?q=Dassasgho,+Ouagadougou&z=14&output=embed',
+  photoAccueil: '', // grande photo de l'accueil (ex. 'photos/accueil.jpg')
+  photoConstruction: '', // photo d'un chantier (ex. 'photos/chantier.jpg')
 };
-
-export const atoutsCles = [
-  {valeur: 'Ouaga & Tenkodogo', libelle: 'Nos zones d’intervention'},
-  {valeur: 'BTP', libelle: 'Génie civil & construction'},
-  {valeur: 'Officiels', libelle: 'Documents remis à l’achat'},
-  {valeur: 'Échelonné', libelle: 'Paiement adapté à votre budget'},
-];
 
 export const villes = ['Toutes', 'Ouagadougou', 'Tenkodogo'];
 
@@ -32,7 +33,7 @@ export const parcelles = [
     document: 'ACD',
     statut: 'Disponible',
     atouts: ['Bitume à 200 m', 'Eau ONEA', 'Électricité SONABEL'],
-    couleur: '#1e846f',
+    photo: '',
   },
   {
     id: 2,
@@ -44,7 +45,7 @@ export const parcelles = [
     document: "Attestation d'attribution",
     statut: 'Disponible',
     atouts: ['Zone lotie', 'Proche école', 'Paiement échelonné'],
-    couleur: '#334e59',
+    photo: '',
   },
   {
     id: 3,
@@ -56,7 +57,7 @@ export const parcelles = [
     document: 'ACD',
     statut: 'Dernières parcelles',
     atouts: ['Parcelle d’angle', 'Voies tracées', 'Calme'],
-    couleur: '#d96f08',
+    photo: '',
   },
   {
     id: 4,
@@ -68,7 +69,7 @@ export const parcelles = [
     document: 'ACD',
     statut: 'Disponible',
     atouts: ['Proche marché', 'Électricité', 'Voies latéritées'],
-    couleur: '#176b5a',
+    photo: '',
   },
   {
     id: 5,
@@ -80,7 +81,7 @@ export const parcelles = [
     document: 'Titre foncier',
     statut: 'Disponible',
     atouts: ['Idéal villa', 'Quartier résidentiel', 'Bitume'],
-    couleur: '#f67f09',
+    photo: '',
   },
   {
     id: 6,
@@ -92,66 +93,63 @@ export const parcelles = [
     document: "Attestation d'attribution",
     statut: 'Disponible',
     atouts: ['Prix accessible', 'Proche des commodités', 'Paiement échelonné'],
-    couleur: '#2b5f6b',
+    photo: '',
   },
+];
+
+// `icone` : nom d'une icône de la bibliothèque Lucide (https://lucide.dev/icons)
+export const pointsForts = [
+  {icone: 'ShieldCheck', titre: 'Sécurité juridique', texte: 'Sites lotis et documents officiels vérifiables.'},
+  {icone: 'Wallet', titre: 'Paiement échelonné', texte: 'Orange Money, Moov Money ou virement.'},
+  {icone: 'HardHat', titre: 'Expertise BTP', texte: 'Nous construisons aussi votre maison.'},
+  {icone: 'Globe', titre: 'Service Diaspora', texte: 'Achat et suivi à distance en toute confiance.'},
 ];
 
 export const services = [
   {
-    icone: '🗺️',
+    icone: 'Map',
     titre: 'Vente de parcelles',
-    texte:
-      'Des terrains lotis et viabilisés dans les zones en pleine expansion de Ouagadougou et Tenkodogo.',
+    texte: 'Terrains lotis dans les zones en pleine expansion de Ouagadougou et Tenkodogo.',
   },
   {
-    icone: '📄',
+    icone: 'FileCheck',
     titre: 'Accompagnement administratif',
-    texte:
-      "Nous vous accompagnons pour l'obtention de l'ACD, du permis d'exploiter et du titre foncier auprès des services compétents.",
+    texte: "Obtention de l'ACD, du permis d'exploiter et du titre foncier auprès des services compétents.",
   },
   {
-    icone: '📐',
+    icone: 'Ruler',
     titre: 'Bornage & topographie',
-    texte:
-      'Implantation des bornes par un géomètre agréé et remise du plan de situation de votre parcelle.',
+    texte: 'Implantation des bornes par un géomètre agréé et remise du plan de situation.',
   },
   {
-    icone: '🏠',
+    icone: 'Building2',
     titre: 'BTP & construction',
-    texte:
-      'Entreprise de génie civil, nous construisons votre maison clé en main selon vos plans et votre budget.',
+    texte: 'Construction de votre maison clé en main, selon vos plans et votre budget.',
   },
   {
-    icone: '💳',
+    icone: 'Wallet',
     titre: 'Paiement échelonné',
-    texte:
-      "Réglez votre parcelle en plusieurs mensualités, sans frais cachés, via Orange Money, Moov Money ou virement.",
+    texte: 'Réglez votre parcelle en plusieurs mensualités, sans frais cachés.',
   },
   {
-    icone: '🌍',
+    icone: 'Globe',
     titre: 'Service Diaspora',
-    texte:
-      'Vous vivez à l’étranger ? Visite vidéo, signature à distance et suivi de votre dossier en toute transparence.',
+    texte: 'Visite vidéo, signature à distance et suivi de votre dossier en toute transparence.',
   },
 ];
 
+export const construction = [
+  'Étude de sol, plans et devis détaillé',
+  'Gros œuvre, toiture et second œuvre',
+  'Suivi de chantier et rapports photo réguliers',
+  'Remise des clés dans les délais convenus',
+];
+
 export const etapes = [
-  {
-    titre: 'Choisissez',
-    texte: 'Parcourez nos sites et contactez-nous pour la parcelle qui vous intéresse.',
-  },
-  {
-    titre: 'Visitez',
-    texte: 'Visite gratuite du site avec un de nos conseillers (ou en vidéo pour la diaspora).',
-  },
-  {
-    titre: 'Réservez',
-    texte: 'Versez un acompte et signez le contrat de réservation.',
-  },
-  {
-    titre: 'Recevez vos papiers',
-    texte: 'Bornage, remise des documents officiels et de votre plan de situation.',
-  },
+  {titre: 'Choisissez', texte: 'Parcourez nos sites et contactez-nous pour la parcelle qui vous intéresse.'},
+  {titre: 'Visitez', texte: 'Visite gratuite du site avec un conseiller, ou en vidéo pour la diaspora.'},
+  {titre: 'Réservez', texte: 'Versez un acompte et signez le contrat de réservation.'},
+  {titre: 'Recevez vos papiers', texte: 'Bornage, remise des documents officiels et du plan de situation.'},
 ];
 
 export const faq = [
@@ -162,13 +160,15 @@ export const faq = [
   },
   {
     question: 'Puis-je payer en plusieurs fois ?',
-    reponse:
-      "Oui. Après un acompte, le solde peut être réglé en mensualités sur une durée de 6 à 24 mois selon la parcelle.",
+    reponse: 'Oui. Après un acompte, le solde peut être réglé en mensualités sur une durée de 6 à 24 mois selon la parcelle.',
   },
   {
     question: 'Je vis à l’étranger, puis-je acheter ?',
-    reponse:
-      'Absolument. Notre service Diaspora organise des visites vidéo, la signature à distance et l’envoi des documents.',
+    reponse: 'Absolument. Notre service Diaspora organise des visites vidéo, la signature à distance et l’envoi des documents.',
+  },
+  {
+    question: 'Pouvez-vous construire ma maison sur la parcelle ?',
+    reponse: 'Oui, Progrès Habitat est une entreprise de BTP et génie civil : plans, devis, construction et suivi de chantier.',
   },
   {
     question: 'Comment vérifier que la parcelle est légale ?',
