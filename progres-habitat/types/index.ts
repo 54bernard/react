@@ -92,6 +92,10 @@ export interface Property {
   cadastral_plan_url: string | null;
   is_featured: boolean;
   is_published: boolean;
+  /** Date d'archivage : un terrain archivé n'est plus publié ni proposé dans les listes. */
+  archived_at: string | null;
+  seo_title: string | null;
+  seo_description: string | null;
   views_count: number;
   created_at: string;
   updated_at: string;
@@ -213,7 +217,33 @@ export interface Paginated<T> {
   pageCount: number;
 }
 
+export type PublicationState = 'publie' | 'brouillon' | 'archive';
+
+export function publicationState(p: Pick<Property, 'is_published' | 'archived_at'>): PublicationState {
+  if (p.archived_at) return 'archive';
+  return p.is_published ? 'publie' : 'brouillon';
+}
+
+export interface AdminUser {
+  user_id: string;
+  email: string;
+  role: 'admin' | 'editor';
+  created_at: string;
+  last_sign_in_at: string | null;
+}
+
+export interface MonthlyStat {
+  /** Format AAAA-MM */
+  month: string;
+  leads: number;
+  visits: number;
+}
+
 export interface DashboardStats {
+  total: number;
+  archived: number;
+  leadsThisWeek: number;
+  monthly: MonthlyStat[];
   available: number;
   reserved: number;
   sold: number;

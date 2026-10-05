@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { SearchX } from 'lucide-react';
 import { toMarker } from '@/components/map/types';
 import {
+  ActiveFilters,
   CatalogProvider,
   FiltersForm,
   MobileFilters,
@@ -59,22 +60,30 @@ export default async function TerrainsPage({ searchParams }: { searchParams: Sea
   return (
     <div className="pt-header">
       <JsonLd data={itemListJsonLd(result.items)} />
-      <div className="border-b border-ink-100 bg-white">
-        <div className="container-page py-10 lg:py-14">
+      <div className="border-b border-ink-950/[0.06]">
+        <div className="container-page pt-8 pb-10 lg:pt-12 lg:pb-14">
           <Breadcrumbs items={[{ name: 'Terrains', path: '/terrains' }]} />
-          <h1 className="mt-5 font-display text-4xl font-medium tracking-tight sm:text-5xl">Terrains à vendre</h1>
-          <p className="mt-3 max-w-2xl text-lg text-ink-500">
-            Parcelles vérifiées à Ouagadougou et Tenkodogo — filtrez par zone, budget, surface ou mode de paiement.
-          </p>
+          <div className="mt-10 flex flex-col gap-6 lg:mt-14 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <h1 className="text-h1">Terrains à vendre</h1>
+              <p className="mt-4 max-w-xl text-lead text-ink-500">
+                Parcelles vérifiées à Ouagadougou et Tenkodogo, avec documents officiels.
+              </p>
+            </div>
+            <p className="text-sm text-ink-500" aria-live="polite">
+              <strong className="font-display text-3xl font-normal text-ink-950 tabular-nums">{result.total}</strong>{' '}
+              terrain{result.total > 1 ? 's' : ''} trouvé{result.total > 1 ? 's' : ''}
+            </p>
+          </div>
         </div>
       </div>
 
       <CatalogProvider filters={filters} view={view}>
         <div className="container-page py-8 lg:py-12">
-          <div className={cn('grid gap-10', view !== 'carte' && 'lg:grid-cols-[17rem_1fr]')}>
+          <div className={cn('grid gap-12', view !== 'carte' && 'lg:grid-cols-[16rem_1fr] xl:gap-16')}>
             {view !== 'carte' && (
               <aside aria-label="Filtres" className="hidden lg:block">
-                <div className="sticky top-28 max-h-[calc(100dvh-8rem)] overflow-y-auto pr-2 pb-8">
+                <div className="sticky top-28 max-h-[calc(100dvh-8rem)] overflow-y-auto pr-3 pb-8">
                   <FiltersForm cities={options.cities} districts={options.districts} />
                 </div>
               </aside>
@@ -82,27 +91,19 @@ export default async function TerrainsPage({ searchParams }: { searchParams: Sea
 
             <div className="min-w-0">
               <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-                <p className="text-ink-600" aria-live="polite">
-                  <strong className="font-semibold text-ink-900">{result.total}</strong> terrain{result.total > 1 ? 's' : ''}{' '}
-                  trouvé{result.total > 1 ? 's' : ''}
-                </p>
-                <div className="flex flex-wrap items-center gap-2">
-                  <MobileFilters
-                    cities={options.cities}
-                    districts={options.districts}
-                    total={result.total}
-                    alwaysVisible={view === 'carte'}
-                  />
+                <div className="flex items-center gap-2">
+                  <MobileFilters cities={options.cities} districts={options.districts} total={result.total} alwaysVisible={view === 'carte'} />
                   {view !== 'carte' && <SortSelect />}
-                  <ViewToggle />
                 </div>
+                <ViewToggle />
               </div>
+              <ActiveFilters zones={options.zones} />
 
               <h2 className="sr-only">Résultats de la recherche</h2>
               <PendingOverlay>
                 {result.items.length === 0 ? (
                   <EmptyState
-                    icon={<SearchX className="size-6" />}
+                    icon={<SearchX />}
                     title="Aucun terrain ne correspond à votre recherche"
                     description="Élargissez vos critères ou laissez-nous votre demande : nous vous prévenons dès qu’un terrain correspondant est disponible."
                     action={
@@ -119,7 +120,12 @@ export default async function TerrainsPage({ searchParams }: { searchParams: Sea
                 ) : view === 'carte' ? (
                   <ResultsMap markers={result.items.map(toMarker)} />
                 ) : (
-                  <ul className={cn('grid gap-6', view === 'grille' ? 'sm:grid-cols-2 xl:grid-cols-3' : 'grid-cols-1')}>
+                  <ul
+                    className={cn(
+                      'grid',
+                      view === 'grille' ? 'gap-x-6 gap-y-12 sm:grid-cols-2 xl:grid-cols-3 xl:gap-x-8' : 'grid-cols-1 divide-y divide-ink-950/[0.07] [&>li]:py-8 [&>li:first-child]:pt-0',
+                    )}
+                  >
                     {result.items.map((p, i) => (
                       <li key={p.id}>
                         <PropertyCard property={p} layout={view === 'liste' ? 'list' : 'grid'} priority={i < 3} />

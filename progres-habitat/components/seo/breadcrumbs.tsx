@@ -9,19 +9,19 @@ export function Breadcrumbs({ items, className }: { items: { name: string; path:
   return (
     <>
       <JsonLd data={breadcrumbJsonLd(all)} />
-      <nav aria-label="Fil d’Ariane" className={cn('text-sm text-ink-500', className)}>
+      <nav aria-label="Fil d’Ariane" className={cn('text-[13px] text-ink-500', className)}>
         <ol className="flex flex-wrap items-center gap-1.5">
           {all.map((item, i) => {
             const last = i === all.length - 1;
             return (
               <li key={item.path} className="flex min-w-0 items-center gap-1.5">
                 {last ? (
-                  <span aria-current="page" className="truncate font-medium text-ink-800">
+                  <span aria-current="page" className="truncate font-medium text-ink-950">
                     {item.name}
                   </span>
                 ) : (
                   <>
-                    <Link href={item.path} className="transition hover:text-brand-700">
+                    <Link href={item.path} className="transition-colors hover:text-ink-950">
                       {item.name}
                     </Link>
                     <ChevronRight className="size-3.5 text-ink-300" aria-hidden="true" />

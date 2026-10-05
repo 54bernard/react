@@ -1,47 +1,37 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import {
-  ArrowRight,
-  BadgeCheck,
-  CalendarCheck,
-  Eye,
-  FileSearch,
-  Handshake,
-  HeartHandshake,
-  KeyRound,
-  Landmark,
-  Search,
-  ShieldCheck,
-  Star,
-  Wallet,
-} from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Star } from 'lucide-react';
 import { WhatsAppIcon } from '@/components/layout/whatsapp-icon';
 import { PropertyCard } from '@/components/property/property-card';
 import { Button } from '@/components/ui/button';
 import { SectionHeading } from '@/components/ui/misc';
 import { Reveal } from '@/components/ui/reveal';
-import { cn, formatPrice } from '@/lib/utils';
+import { cn, formatPrice, formatSurface } from '@/lib/utils';
 import { phoneHref, whatsappLink } from '@/lib/whatsapp';
 import type { LocationWithStats, PropertyWithRelations, Testimonial } from '@/types';
+
+function TextLink({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <Link href={href} className="group inline-flex items-center gap-2 text-[15px] font-semibold text-ink-950">
+      <span className="link-underline">{children}</span>
+      <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />
+    </Link>
+  );
+}
 
 /* ------------------------------------------------------------ Terrains à la une */
 export function FeaturedProperties({ properties }: { properties: PropertyWithRelations[] }) {
   return (
-    <section className="py-20 lg:py-28" aria-labelledby="featured-title">
+    <section className="section-y" aria-labelledby="featured-title">
       <div className="container-page">
         <SectionHeading
-          eyebrow="Sélection"
-          title={<span id="featured-title">Terrains à la une</span>}
-          description="Une sélection de parcelles vérifiées par nos équipes, prêtes à accueillir votre projet."
-          action={
-            <Button asChild variant="outline">
-              <Link href="/terrains">
-                Tous les terrains <ArrowRight />
-              </Link>
-            </Button>
-          }
+          id="featured-title"
+          eyebrow="Sélection du moment"
+          title="Terrains à la une"
+          description="Des parcelles vérifiées par nos équipes, prêtes à accueillir votre projet."
+          action={<TextLink href="/terrains">Voir tous les terrains</TextLink>}
         />
-        <ul className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+        <ul className="mt-12 grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3 lg:gap-x-8 lg:gap-y-16">
           {properties.map((p, i) => (
             <Reveal as="li" key={p.id} delay={(i % 3) * 0.08}>
               <PropertyCard property={p} />
@@ -57,39 +47,41 @@ export function FeaturedProperties({ properties }: { properties: PropertyWithRel
 export function PopularProperties({ properties }: { properties: PropertyWithRelations[] }) {
   if (properties.length === 0) return null;
   return (
-    <section className="border-y border-ink-100 bg-white py-16 lg:py-20" aria-labelledby="popular-title">
-      <div className="container-page">
-        <div className="flex items-end justify-between gap-6">
-          <div>
-            <p className="eyebrow mb-3">
-              <Eye className="size-4" aria-hidden="true" /> Les plus consultés
-            </p>
-            <h2 id="popular-title" className="font-display text-3xl font-medium tracking-tight">
-              Terrains populaires
-            </h2>
-          </div>
+    <section className="border-y border-ink-950/[0.06] bg-white" aria-labelledby="popular-title">
+      <div className="container-page grid gap-10 py-16 lg:grid-cols-[18rem_1fr] lg:gap-16 lg:py-20">
+        <div>
+          <p className="eyebrow mb-4">Les plus consultés</p>
+          <h2 id="popular-title" className="text-h3">
+            Terrains populaires
+          </h2>
+          <p className="mt-3 text-[15px] text-ink-500">Les annonces que nos visiteurs regardent le plus en ce moment.</p>
         </div>
-        <ol className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2 [&>li]:min-w-0">
+        <ol className="grid divide-y divide-ink-950/[0.06] sm:grid-cols-2 sm:gap-x-10 sm:divide-y-0">
           {properties.map((p, i) => (
-            <li key={p.id}>
-              <Link
-                href={`/terrains/${p.slug}`}
-                className="group flex items-center gap-4 rounded-2xl border border-ink-100 p-3 transition hover:border-ink-200 hover:bg-sand-50"
-              >
-                <span className="w-7 shrink-0 text-center font-display text-2xl text-ink-300">{i + 1}</span>
-                <div className="relative size-20 shrink-0 overflow-hidden rounded-xl bg-sand-100 sm:size-24">
+            <li key={p.id} className="sm:border-b sm:border-ink-950/[0.06] sm:[&:nth-last-child(-n+2)]:border-0">
+              <Link href={`/terrains/${p.slug}`} className="group flex items-center gap-5 py-5">
+                <span className="w-6 font-display text-2xl text-ink-300 tabular-nums">{String(i + 1).padStart(2, '0')}</span>
+                <div className="relative size-16 shrink-0 overflow-hidden rounded-xl bg-sand-100 sm:size-[4.5rem]">
                   {p.images[0] && (
-                    <Image src={p.images[0].url} alt={p.images[0].alt ?? p.title} fill sizes="96px" className="object-cover" />
+                    <Image
+                      src={p.images[0].url}
+                      alt=""
+                      fill
+                      sizes="72px"
+                      className="object-cover transition-transform duration-700 ease-[var(--ease-premium)] group-hover:scale-105"
+                    />
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate font-semibold text-ink-900 group-hover:text-brand-700">{p.title}</p>
-                  <p className="mt-0.5 truncate text-sm text-ink-500">
-                    {p.district}, {p.city}
+                  <p className="truncate text-[15px] font-semibold text-ink-950">{p.title}</p>
+                  <p className="mt-1 text-sm text-ink-500">
+                    {formatPrice(p.price)} · {formatSurface(p.surface)}
                   </p>
-                  <p className="mt-1.5 font-semibold text-ink-900">{formatPrice(p.price)}</p>
                 </div>
-                <ArrowRight className="mr-2 size-5 shrink-0 text-ink-300 transition group-hover:translate-x-1 group-hover:text-brand-600" aria-hidden="true" />
+                <ArrowUpRight
+                  className="size-5 shrink-0 text-ink-300 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-ink-950"
+                  aria-hidden="true"
+                />
               </Link>
             </li>
           ))}
@@ -102,23 +94,23 @@ export function PopularProperties({ properties }: { properties: PropertyWithRela
 /* ------------------------------------------------------------ Zones */
 export function ZonesSection({ zones }: { zones: LocationWithStats[] }) {
   return (
-    <section className="bg-sand-100/60 py-20 lg:py-28" aria-labelledby="zones-title">
+    <section className="section-y" aria-labelledby="zones-title">
       <div className="container-page">
         <SectionHeading
+          id="zones-title"
           eyebrow="Nos zones"
-          title={<span id="zones-title">Recherchez par localisation</span>}
-          description="Des quartiers en plein développement à Ouagadougou et Tenkodogo, choisis pour leur potentiel."
-          action={
-            <Button asChild variant="outline">
-              <Link href="/zones">
-                Toutes les zones <ArrowRight />
-              </Link>
-            </Button>
-          }
+          title="Rechercher par localisation"
+          description="Des quartiers en développement à Ouagadougou et Tenkodogo, choisis pour leur desserte et leur potentiel."
+          action={<TextLink href="/zones">Toutes les zones</TextLink>}
         />
-        <ul className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:mt-16 lg:grid-cols-12 lg:gap-5">
           {zones.map((z, i) => (
-            <Reveal as="li" key={z.id} delay={(i % 3) * 0.08} className={cn(i === 0 && 'lg:row-span-2')}>
+            <Reveal
+              as="li"
+              key={z.id}
+              delay={(i % 3) * 0.08}
+              className={cn(i === 0 ? 'sm:col-span-2 lg:col-span-7 lg:row-span-2' : i < 3 ? 'lg:col-span-5' : 'lg:col-span-4', i >= 3 && 'lg:col-span-6')}
+            >
               <ZoneCard zone={z} tall={i === 0} />
             </Reveal>
           ))}
@@ -133,83 +125,71 @@ export function ZoneCard({ zone, tall = false }: { zone: LocationWithStats; tall
     <Link
       href={`/terrains?zone=${zone.slug}`}
       className={cn(
-        'group relative flex h-full min-h-64 flex-col justify-end overflow-hidden rounded-3xl bg-ink-900 p-6 text-white',
-        tall && 'lg:min-h-[34rem]',
+        'group relative flex h-full min-h-72 flex-col justify-end overflow-hidden rounded-2xl bg-ink-900 p-6 text-white sm:p-7',
+        tall && 'min-h-96 lg:min-h-[36rem]',
       )}
     >
       {zone.image_url && (
         <Image
           src={zone.image_url}
-          alt={`Terrains à ${zone.name}`}
+          alt=""
           fill
-          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-          className="object-cover opacity-90 transition-transform duration-700 ease-out group-hover:scale-105"
+          sizes={tall ? '(min-width: 1024px) 58vw, 100vw' : '(min-width: 1024px) 42vw, (min-width: 640px) 50vw, 100vw'}
+          className="object-cover transition-transform duration-[1200ms] ease-[var(--ease-premium)] group-hover:scale-[1.04]"
         />
       )}
-      <div className="absolute inset-0 bg-gradient-to-t from-ink-950/85 via-ink-950/25 to-transparent" />
-      <div className="relative">
-        <p className="text-sm text-white/70">{zone.city}</p>
-        <h3 className="mt-1 font-display text-2xl font-medium text-white sm:text-3xl">{zone.name}</h3>
-        <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
-          <span>
-            <strong className="font-semibold">{zone.available_count}</strong>{' '}
-            <span className="text-white/75">terrain{zone.available_count > 1 ? 's' : ''} disponible{zone.available_count > 1 ? 's' : ''}</span>
-          </span>
-          {zone.average_price !== null && (
-            <span className="text-white/75">
-              Prix moyen <strong className="font-semibold text-white">{formatPrice(zone.average_price)}</strong>
-            </span>
-          )}
+      <div className="absolute inset-0 bg-gradient-to-t from-ink-950/90 via-ink-950/30 to-ink-950/0" />
+      <div className="relative flex items-end justify-between gap-6">
+        <div>
+          <p className="text-[12px] font-medium tracking-[0.08em] text-white/65 uppercase">{zone.city}</p>
+          <h3 className={cn('mt-2 font-display tracking-tight text-white', tall ? 'text-4xl sm:text-5xl' : 'text-[1.75rem]')}>{zone.name}</h3>
+          <p className="mt-3 text-sm text-white/75">
+            {zone.available_count} terrain{zone.available_count > 1 ? 's' : ''} disponible{zone.available_count > 1 ? 's' : ''}
+            {zone.average_price !== null && <> · prix moyen {formatPrice(zone.average_price)}</>}
+          </p>
         </div>
+        <span className="grid size-11 shrink-0 place-items-center rounded-full border border-white/30 transition-all duration-500 ease-[var(--ease-premium)] group-hover:border-white group-hover:bg-white group-hover:text-ink-950">
+          <ArrowUpRight className="size-5" aria-hidden="true" />
+        </span>
       </div>
-      <span className="absolute top-5 right-5 grid size-10 place-items-center rounded-full bg-white/15 backdrop-blur transition group-hover:bg-white group-hover:text-ink-900">
-        <ArrowRight className="size-5 -rotate-45 transition group-hover:rotate-0" aria-hidden="true" />
-      </span>
     </Link>
   );
 }
 
 /* ------------------------------------------------------------ Pourquoi nous choisir */
 const reasons = [
-  { icon: BadgeCheck, title: 'Terrains vérifiés', text: 'Chaque parcelle est contrôlée : lotissement, bornage et situation administrative.' },
-  { icon: Landmark, title: 'Accompagnement juridique', text: 'Nous vous guidons jusqu’à l’ACD et au titre foncier, en toute transparence.' },
-  { icon: Wallet, title: 'Prix transparents', text: 'Prix affichés, frais annexes estimés par écrit avant toute réservation.' },
-  { icon: CalendarCheck, title: 'Visites organisées', text: 'Visite gratuite sur site avec un conseiller, ou en vidéo pour la diaspora.' },
-  { icon: ShieldCheck, title: 'Paiements sécurisés', text: 'Contrat écrit, reçu pour chaque versement, paiement comptant ou échelonné.' },
-  { icon: HeartHandshake, title: 'Service après-vente', text: 'Suivi des démarches et construction possible par nos équipes BTP.' },
+  { title: 'Terrains vérifiés', text: 'Lotissement, bornage et situation administrative contrôlés avant toute mise en vente.' },
+  { title: 'Accompagnement juridique', text: 'Nous vous guidons jusqu’à l’ACD et au titre foncier, à chaque étape.' },
+  { title: 'Prix transparents', text: 'Prix affichés et frais annexes estimés par écrit avant la réservation.' },
+  { title: 'Visites organisées', text: 'Sur place avec un conseiller, ou en vidéo pour la diaspora.' },
+  { title: 'Paiements sécurisés', text: 'Contrat écrit, reçu pour chaque versement, comptant ou échelonné.' },
+  { title: 'Service après-vente', text: 'Suivi des démarches et construction possible par nos équipes BTP.' },
 ];
 
 export function WhyUs() {
   return (
-    <section className="py-20 lg:py-28" aria-labelledby="why-title">
-      <div className="container-page grid gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
+    <section className="section-y border-t border-ink-950/[0.06] bg-white" aria-labelledby="why-title">
+      <div className="container-page grid gap-14 lg:grid-cols-[1fr_1.15fr] lg:gap-24">
         <div className="lg:sticky lg:top-32 lg:self-start">
           <SectionHeading
+            id="why-title"
             eyebrow="Pourquoi Progrès Habitat"
-            title={<span id="why-title">Acheter un terrain, en toute confiance</span>}
-            description="Acheter une parcelle est souvent l’investissement d’une vie. Notre rôle : sécuriser chaque étape, du premier appel à la remise des documents."
+            title="Acheter un terrain, en toute confiance."
+            description="Une parcelle est souvent l’investissement d’une vie. Notre rôle : sécuriser chaque étape, du premier appel à la remise des documents."
           />
-          <div className="relative mt-10 aspect-[4/3] overflow-hidden rounded-3xl">
-            <Image
-              src="/images/apropos.webp"
-              alt="Vue aérienne d’un lotissement aménagé"
-              fill
-              sizes="(min-width: 1024px) 40vw, 100vw"
-              className="object-cover"
-            />
+          <div className="relative mt-10 aspect-[5/4] overflow-hidden rounded-3xl">
+            <Image src="/images/apropos.webp" alt="Vue aérienne d’un lotissement aménagé" fill sizes="(min-width: 1024px) 40vw, 100vw" className="object-cover" />
           </div>
         </div>
-        <ul className="grid gap-x-8 gap-y-10 sm:grid-cols-2">
-          {reasons.map(({ icon: Icon, title, text }, i) => (
-            <Reveal as="li" key={title} delay={(i % 2) * 0.08} className="border-t border-ink-100 pt-8">
-              <span className="grid size-12 place-items-center rounded-2xl bg-brand-50 text-brand-700">
-                <Icon className="size-6" strokeWidth={1.7} aria-hidden="true" />
-              </span>
-              <h3 className="mt-5 text-lg font-semibold">{title}</h3>
-              <p className="mt-2 leading-relaxed text-ink-500">{text}</p>
+        <ol className="grid sm:grid-cols-2 sm:gap-x-12">
+          {reasons.map(({ title, text }, i) => (
+            <Reveal as="li" key={title} delay={(i % 2) * 0.08} className="border-t border-ink-950/10 py-8">
+              <span className="font-display text-sm text-ink-400 tabular-nums">{String(i + 1).padStart(2, '0')}</span>
+              <h3 className="mt-4 text-lg font-semibold tracking-[-0.01em] text-ink-950">{title}</h3>
+              <p className="mt-2 text-[15px] leading-relaxed text-ink-500">{text}</p>
             </Reveal>
           ))}
-        </ul>
+        </ol>
       </div>
     </section>
   );
@@ -217,37 +197,34 @@ export function WhyUs() {
 
 /* ------------------------------------------------------------ Processus d'achat */
 export const purchaseSteps = [
-  { icon: Search, title: 'Découvrir', text: 'Parcourez nos terrains en ligne ou échangez avec un conseiller sur votre projet et votre budget.' },
-  { icon: HeartHandshake, title: 'Choisir', text: 'Nous vous proposons une sélection adaptée à vos critères : zone, surface, budget.' },
-  { icon: CalendarCheck, title: 'Visiter', text: 'Visite gratuite sur le terrain avec un conseiller, ou en vidéo si vous êtes à l’étranger.' },
-  { icon: FileSearch, title: 'Vérifier les documents', text: 'Nous vous remettons les références du document pour vérification auprès des services compétents.' },
-  { icon: Handshake, title: 'Réserver', text: 'Vous versez un acompte et signez le contrat de réservation, avec reçu.' },
-  { icon: KeyRound, title: 'Finaliser l’achat', text: 'Règlement du solde, bornage contradictoire et remise des documents officiels.' },
+  { title: 'Découvrir', text: 'Parcourez nos terrains ou échangez avec un conseiller sur votre projet et votre budget.' },
+  { title: 'Choisir', text: 'Nous vous proposons une sélection adaptée : zone, surface, budget.' },
+  { title: 'Visiter', text: 'Visite gratuite avec un conseiller, ou en vidéo si vous êtes à l’étranger.' },
+  { title: 'Vérifier les documents', text: 'Vous recevez les références du document pour vérification auprès des services compétents.' },
+  { title: 'Réserver', text: 'Acompte et signature du contrat de réservation, avec reçu.' },
+  { title: 'Finaliser l’achat', text: 'Règlement du solde, bornage contradictoire et remise des documents officiels.' },
 ];
 
 export function PurchaseProcess({ compact = false }: { compact?: boolean }) {
   return (
-    <section className={cn('bg-ink-950 text-white', compact ? 'py-16' : 'py-20 lg:py-28')} aria-labelledby="process-title">
+    <section className={cn('bg-ink-950 text-white', compact ? 'py-16 lg:py-24' : 'section-y')} aria-labelledby="process-title">
       <div className="container-page">
-        <div className="max-w-2xl">
-          <p className="eyebrow mb-3 !text-brand-300">Processus d’achat</p>
-          <h2 id="process-title" className="font-display text-3xl font-medium tracking-tight text-white sm:text-4xl lg:text-[2.75rem]">
-            Six étapes claires, un seul interlocuteur
-          </h2>
-        </div>
-        <ol className="relative mt-14 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
-          {purchaseSteps.map(({ icon: Icon, title, text }, i) => (
-            <Reveal as="li" key={title} delay={(i % 3) * 0.1} className="relative pl-16">
-              <span className="absolute top-0 left-0 grid size-12 place-items-center rounded-full border border-white/15 bg-white/5 font-display text-lg text-accent-400">
+        <SectionHeading
+          id="process-title"
+          tone="inverse"
+          eyebrow="Processus d’achat"
+          title="Six étapes claires, un seul interlocuteur."
+          description="De la première visite à la remise des documents, vous savez toujours où en est votre dossier."
+        />
+        <ol className="relative mt-14 grid gap-y-10 sm:grid-cols-2 sm:gap-x-10 lg:mt-20 lg:grid-cols-6 lg:gap-x-6">
+          <span aria-hidden="true" className="absolute top-[1.4rem] right-0 left-0 hidden h-px bg-white/15 lg:block" />
+          {purchaseSteps.map(({ title, text }, i) => (
+            <Reveal as="li" key={title} delay={i * 0.06} className="relative">
+              <span className="relative grid size-11 place-items-center rounded-full border border-white/20 bg-ink-950 font-display text-[15px] text-white tabular-nums">
                 {i + 1}
               </span>
-              {i < purchaseSteps.length - 1 && (
-                <span aria-hidden="true" className="absolute top-14 bottom-[-2.5rem] left-6 w-px bg-gradient-to-b from-white/20 to-transparent sm:hidden" />
-              )}
-              <h3 className="flex items-center gap-2 text-lg font-semibold text-white">
-                <Icon className="size-5 text-brand-300" aria-hidden="true" /> {title}
-              </h3>
-              <p className="mt-2 leading-relaxed text-white/65">{text}</p>
+              <h3 className="mt-6 text-base font-semibold text-white">{title}</h3>
+              <p className="mt-2 text-[14px] leading-relaxed text-white/60">{text}</p>
             </Reveal>
           ))}
         </ol>
@@ -260,40 +237,40 @@ export function PurchaseProcess({ compact = false }: { compact?: boolean }) {
 export function Testimonials({ items, isExample }: { items: Testimonial[]; isExample: boolean }) {
   if (items.length === 0) return null;
   return (
-    <section className="py-20 lg:py-28" aria-labelledby="testimonials-title">
+    <section className="section-y" aria-labelledby="testimonials-title">
       <div className="container-page">
         <SectionHeading
+          id="testimonials-title"
           eyebrow="Témoignages"
-          align="center"
-          title={<span id="testimonials-title">Ils nous ont fait confiance</span>}
+          title="Ils nous ont fait confiance."
           description={isExample ? 'Mode démonstration : ces cartes sont des exemples de mise en page, pas de vrais avis.' : undefined}
         />
-        <ul className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <ul className="mt-12 grid gap-5 md:grid-cols-2 lg:mt-16 lg:grid-cols-3 lg:gap-6">
           {items.slice(0, 3).map((t, i) => (
             <Reveal as="li" key={t.id} delay={i * 0.08}>
-              <figure className="flex h-full flex-col rounded-3xl border border-ink-100 bg-white p-7 shadow-soft">
-                {isExample && (
-                  <span className="mb-4 self-start rounded-full bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-800">
-                    Exemple
-                  </span>
-                )}
-                <div className="flex gap-0.5" role="img" aria-label={`Note : ${t.rating} sur 5`}>
-                  {Array.from({ length: 5 }).map((_, s) => (
-                    <Star key={s} className={cn('size-4', s < t.rating ? 'fill-accent-500 text-accent-500' : 'text-ink-200')} aria-hidden="true" />
-                  ))}
+              <figure className="flex h-full flex-col rounded-2xl border border-ink-950/[0.07] bg-white p-7 sm:p-8">
+                <div className="flex items-center justify-between">
+                  <div className="flex gap-0.5" role="img" aria-label={`Note : ${t.rating} sur 5`}>
+                    {Array.from({ length: 5 }).map((_, s) => (
+                      <Star key={s} className={cn('size-3.5', s < t.rating ? 'fill-ink-950 text-ink-950' : 'text-ink-200')} aria-hidden="true" />
+                    ))}
+                  </div>
+                  {isExample && <span className="rounded-full bg-amber-50 px-2.5 py-1 text-[11px] font-semibold text-amber-900">Exemple</span>}
                 </div>
-                <blockquote className="mt-5 flex-1 text-[17px] leading-relaxed text-ink-700">“{t.content}”</blockquote>
-                <figcaption className="mt-7 flex items-center gap-3 border-t border-ink-100 pt-5">
+                <blockquote className="mt-6 flex-1 font-display text-[1.25rem] leading-snug tracking-[-0.01em] text-ink-950">
+                  « {t.content} »
+                </blockquote>
+                <figcaption className="mt-8 flex items-center gap-3 border-t border-ink-950/[0.07] pt-5">
                   {t.photo_url ? (
-                    <Image src={t.photo_url} alt="" width={44} height={44} className="size-11 rounded-full object-cover" />
+                    <Image src={t.photo_url} alt="" width={40} height={40} className="size-10 rounded-full object-cover" />
                   ) : (
-                    <span className="grid size-11 place-items-center rounded-full bg-brand-50 font-semibold text-brand-700" aria-hidden="true">
+                    <span className="grid size-10 place-items-center rounded-full bg-sand-100 text-sm font-semibold text-ink-700" aria-hidden="true">
                       {t.name.replace(/^Exemple — /, '').charAt(0).toUpperCase()}
                     </span>
                   )}
                   <div>
-                    <p className="font-semibold text-ink-900">{t.name}</p>
-                    {t.property_label && <p className="text-sm text-ink-500">{t.property_label}</p>}
+                    <p className="text-sm font-semibold text-ink-950">{t.name}</p>
+                    {t.property_label && <p className="text-[13px] text-ink-500">{t.property_label}</p>}
                   </div>
                 </figcaption>
               </figure>
@@ -308,25 +285,21 @@ export function Testimonials({ items, isExample }: { items: Testimonial[]; isExa
 /* ------------------------------------------------------------ Appel à l'action */
 export function CtaSection({ whatsapp, phone }: { whatsapp: string; phone: string }) {
   return (
-    <section className="px-4 py-10 sm:px-6 lg:px-8 lg:py-16" aria-labelledby="cta-title">
-      <div className="relative isolate mx-auto max-w-7xl overflow-hidden rounded-[2rem] bg-brand-800 px-6 py-16 sm:px-12 lg:px-20 lg:py-24">
-        <Image src="/images/hero.webp" alt="" fill sizes="100vw" className="-z-10 object-cover opacity-25 mix-blend-luminosity" />
-        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-brand-900 via-brand-900/90 to-brand-800/60" />
+    <section className="px-4 pb-20 sm:px-6 lg:px-10 lg:pb-28" aria-labelledby="cta-title">
+      <div className="relative isolate mx-auto max-w-[80rem] overflow-hidden rounded-3xl bg-ink-950 px-6 py-16 sm:px-12 sm:py-20 lg:px-20 lg:py-28">
+        <Image src="/images/hero.webp" alt="" fill sizes="(min-width: 1280px) 1280px, 100vw" className="-z-10 object-cover opacity-45" />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-ink-950 via-ink-950/85 to-ink-950/30" />
         <div className="max-w-2xl">
-          <h2 id="cta-title" className="font-display text-4xl leading-tight font-medium tracking-tight text-white sm:text-5xl">
+          <p className="eyebrow !text-white/60">Parlons de votre projet</p>
+          <h2 id="cta-title" className="mt-5 text-h1 text-white">
             Votre futur terrain vous attend.
           </h2>
-          <p className="mt-5 text-lg leading-relaxed text-white/75">
-            Parlez à un conseiller : nous vous aidons à trouver la parcelle adaptée à votre budget et organisons votre
-            visite.
+          <p className="mt-5 max-w-lg text-lead text-white/70">
+            Un conseiller vous aide à trouver la parcelle adaptée à votre budget et organise votre visite.
           </p>
-          <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-            <Button asChild size="lg" variant="whatsapp">
-              <a
-                href={whatsappLink(whatsapp, 'Bonjour, je souhaite parler avec un conseiller Progrès Habitat.')}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+          <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+            <Button asChild size="lg" variant="light">
+              <a href={whatsappLink(whatsapp, 'Bonjour, je souhaite parler avec un conseiller Progrès Habitat.')} target="_blank" rel="noopener noreferrer">
                 <WhatsAppIcon /> Parler avec un conseiller
               </a>
             </Button>

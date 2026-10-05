@@ -82,7 +82,7 @@ export function ShareButton({ title, url, className }: { title: string; url: str
       onClick={share}
       aria-label="Partager ce terrain"
       className={cn(
-        'grid size-11 cursor-pointer place-items-center rounded-full border border-ink-200 bg-white text-ink-700 transition hover:border-ink-300',
+        'grid size-11 cursor-pointer place-items-center rounded-full border border-ink-200 bg-white text-ink-800 transition-colors duration-300 hover:border-ink-950',
         className,
       )}
     >
@@ -107,36 +107,34 @@ export function PropertyActions({ property, whatsapp, phone, pageUrl, trackView 
   }, [property.slug, trackView]);
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2.5">
+      {sold ? (
+        <Button variant="outline" size="lg" className="w-full" disabled>
+          Ce terrain est vendu
+        </Button>
+      ) : (
+        <VisitSheet
+          property={property}
+          trigger={
+            <Button size="lg" className="w-full">
+              <CalendarCheck /> Demander une visite
+            </Button>
+          }
+        />
+      )}
       <Button asChild variant="whatsapp" size="lg" className="w-full">
         <a href={waHref} target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('whatsapp_click', { ref: property.reference })}>
           <WhatsAppIcon /> {sold ? 'Demander un terrain similaire' : 'Écrire sur WhatsApp'}
         </a>
       </Button>
-      <div className="grid grid-cols-2 gap-3">
-        <Button asChild variant="outline" size="lg">
+      <div className="flex items-center gap-2.5 pt-1">
+        <Button asChild variant="outline" size="lg" className="flex-1">
           <a href={phoneHref(phone)} onClick={() => trackEvent('phone_click', { ref: property.reference })}>
             <Phone /> Appeler
           </a>
         </Button>
-        {sold ? (
-          <Button variant="outline" size="lg" disabled>
-            Vendu
-          </Button>
-        ) : (
-          <VisitSheet
-            property={property}
-            trigger={
-              <Button variant="dark" size="lg">
-                <CalendarCheck /> Visiter
-              </Button>
-            }
-          />
-        )}
-      </div>
-      <div className="flex items-center justify-center gap-3 pt-2">
-        <FavoriteButton propertyId={property.id} title={property.title} variant="outline" />
-        <ShareButton title={property.title} url={pageUrl} />
+        <FavoriteButton propertyId={property.id} title={property.title} variant="outline" className="size-12 shrink-0 sm:size-13" />
+        <ShareButton title={property.title} url={pageUrl} className="size-12 shrink-0 sm:size-13" />
       </div>
     </div>
   );
@@ -146,9 +144,9 @@ export function PropertyActions({ property, whatsapp, phone, pageUrl, trackView 
 export function MobileActionBar({ property, whatsapp, phone, pageUrl }: Props) {
   const waHref = useWhatsappHref(property, whatsapp, pageUrl);
   return (
-    <div className="fixed inset-x-0 bottom-0 z-30 border-t border-ink-100 bg-white/95 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur lg:hidden">
+    <div className="fixed inset-x-0 bottom-0 z-30 border-t border-ink-950/[0.06] bg-white/90 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur-xl lg:hidden">
       <div className="flex items-center gap-2">
-        <Button asChild variant="outline" size="icon" className="size-12 shrink-0 rounded-xl">
+        <Button asChild variant="outline" size="icon" className="size-12 shrink-0">
           <a href={phoneHref(phone)} aria-label="Appeler" onClick={() => trackEvent('phone_click', { ref: property.reference })}>
             <Phone />
           </a>
@@ -157,7 +155,7 @@ export function MobileActionBar({ property, whatsapp, phone, pageUrl }: Props) {
           <VisitSheet
             property={property}
             trigger={
-              <Button variant="dark" className="h-12 flex-1 px-3">
+              <Button className="h-12 flex-1 px-3">
                 <CalendarCheck /> Visite
               </Button>
             }

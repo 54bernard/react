@@ -22,8 +22,10 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const property = await getPropertyBySlug(slug);
   if (!property) return { title: 'Terrain introuvable', robots: { index: false } };
   return pageMetadata({
-    title: propertyTitle(property),
-    description: `${property.title} : ${formatSurface(property.surface)} à ${property.district}, ${property.city}, au prix de ${formatPrice(property.price)}. ${property.description.slice(0, 110)}…`,
+    title: property.seo_title || propertyTitle(property),
+    description:
+      property.seo_description ||
+      `${property.title} : ${formatSurface(property.surface)} à ${property.district}, ${property.city}, au prix de ${formatPrice(property.price)}. ${property.description.slice(0, 110)}…`,
     path: `/terrains/${property.slug}`,
     image: property.images[0]?.url,
   });

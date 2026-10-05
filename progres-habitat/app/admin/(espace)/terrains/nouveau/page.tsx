@@ -1,16 +1,22 @@
 import { PropertyForm } from '@/components/admin/property-form';
 import { AdminPageHeader } from '@/components/admin/ui';
-import { getAdminContext } from '@/lib/auth';
-import { getLocations } from '@/services/properties';
+import { requireAdminPage } from '@/lib/auth';
+import { publicEnv } from '@/lib/env';
+import { listAdminLocations } from '@/services/admin';
 
 export const metadata = { title: 'Nouveau terrain' };
 
 export default async function NewPropertyPage() {
-  const [ctx, locations] = await Promise.all([getAdminContext(), getLocations()]);
+  const { supabase, isDemo } = await requireAdminPage();
+  const locations = await listAdminLocations(supabase);
   return (
     <>
-      <AdminPageHeader title="Nouveau terrain" description="Renseignez les informations puis enregistrez. Vous pourrez prévisualiser avant de publier." />
-      <PropertyForm locations={locations} isDemo={ctx.mode !== 'live'} />
+      <AdminPageHeader
+        title="Nouveau terrain"
+        description="Enregistrez d’abord en brouillon, prévisualisez, puis publiez."
+        back={{ href: '/admin/terrains', label: 'Terrains' }}
+      />
+      <PropertyForm locations={locations} isDemo={isDemo} siteUrl={publicEnv.siteUrl} />
     </>
   );
 }

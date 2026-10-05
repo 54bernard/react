@@ -1,14 +1,30 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
-import { isSupabaseConfigured, publicEnv } from '@/lib/env';
+import { isDemoAdminAllowed, isSupabaseConfigured, publicEnv } from '@/lib/env';
 
-/** Rafraîchit la session Supabase et protège les routes /admin. */
+const LOGIN_PATH = '/admin/connexion';
+
+function redirectToLogin(request: NextRequest) {
+  const url = request.nextUrl.clone();
+  url.pathname = LOGIN_PATH;
+  url.search = '';
+  if (request.nextUrl.pathname !== '/admin') url.searchParams.set('redirect', request.nextUrl.pathname);
+  return NextResponse.redirect(url);
+}
+
+/**
+ * Protège toutes les routes /admin (hors page de connexion) et rafraîchit la session Supabase.
+ * Les pages et Server Actions revérifient ensuite le rôle administrateur côté serveur.
+ */
 export async function updateSession(request: NextRequest) {
-  let response = NextResponse.next({ request });
   const { pathname } = request.nextUrl;
-  const isAdminRoute = pathname.startsWith('/admin') && !pathname.startsWith('/admin/connexion');
+  const isProtected = pathname.startsWith('/admin') && pathname !== LOGIN_PATH;
+  let response = NextResponse.next({ request });
+  response.headers.set('X-Robots-Tag', 'noindex, nofollow');
 
-  if (!isSupabaseConfigured) return response;
+  if (!isSupabaseConfigured) {
+    return isProtected && !isDemoAdminAllowed() ? redirectToLogin(request) : response;
+  }
 
   const supabase = createServerClient(publicEnv.supabaseUrl, publicEnv.supabaseAnonKey, {
     cookies: {
@@ -16,21 +32,17 @@ export async function updateSession(request: NextRequest) {
       setAll: (toSet) => {
         toSet.forEach(({ name, value }) => request.cookies.set(name, value));
         response = NextResponse.next({ request });
+        response.headers.set('X-Robots-Tag', 'noindex, nofollow');
         toSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
       },
     },
   });
 
+  // getUser() vérifie le jeton auprès de Supabase (contrairement à getSession()).
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (isAdminRoute && !user) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/admin/connexion';
-    url.searchParams.set('redirect', pathname);
-    return NextResponse.redirect(url);
-  }
-
+  if (isProtected && !user) return redirectToLogin(request);
   return response;
 }

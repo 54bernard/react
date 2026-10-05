@@ -3,7 +3,7 @@ import { ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const fieldBase =
-  'w-full rounded-xl border border-ink-200 bg-white px-3.5 text-[15px] text-ink-900 shadow-[0_1px_0_rgb(15_25_29/0.02)] transition-colors placeholder:text-ink-400 hover:border-ink-300 focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/10 disabled:cursor-not-allowed disabled:bg-ink-50 aria-[invalid=true]:border-red-400 aria-[invalid=true]:focus:ring-red-500/10';
+  'w-full rounded-xl border border-ink-200 bg-white px-3.5 text-[15px] text-ink-950 transition-[border-color,box-shadow] duration-200 placeholder:text-ink-400 hover:border-ink-300 focus:border-ink-900 focus:ring-4 focus:ring-ink-900/[0.06] focus:outline-none focus-visible:outline-none disabled:cursor-not-allowed disabled:bg-ink-50 disabled:text-ink-500 aria-[invalid=true]:border-red-500 aria-[invalid=true]:focus:ring-red-500/10';
 
 export const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(
   ({ className, ...props }, ref) => <input ref={ref} className={cn(fieldBase, 'h-11', className)} {...props} />,
@@ -47,22 +47,27 @@ export function FieldError({ id, message }: { id: string; message?: string }) {
 }
 
 interface FieldProps {
-  label: string;
+  label: React.ReactNode;
   htmlFor: string;
   error?: string;
   hint?: string;
   optional?: boolean;
   className?: string;
+  /** Élément affiché à droite du libellé (compteur de caractères, aide…) */
+  aside?: React.ReactNode;
   children: React.ReactNode;
 }
 
-export function Field({ label, htmlFor, error, hint, optional, className, children }: FieldProps) {
+export function Field({ label, htmlFor, error, hint, optional, className, aside, children }: FieldProps) {
   return (
     <div className={className}>
-      <Label htmlFor={htmlFor}>
-        {label}
-        {optional && <span className="ml-1 font-normal text-ink-400">(facultatif)</span>}
-      </Label>
+      <div className="flex items-baseline justify-between gap-3">
+        <Label htmlFor={htmlFor}>
+          {label}
+          {optional && <span className="ml-1 font-normal text-ink-400">(facultatif)</span>}
+        </Label>
+        {aside}
+      </div>
       {children}
       {hint && !error && <p className="mt-1.5 text-xs text-ink-500">{hint}</p>}
       <FieldError id={`${htmlFor}-error`} message={error} />
@@ -75,7 +80,7 @@ export function Checkbox({ className, ...props }: React.InputHTMLAttributes<HTML
     <input
       type="checkbox"
       className={cn(
-        'size-4.5 shrink-0 cursor-pointer rounded border-ink-300 accent-brand-600 focus-visible:outline-2 focus-visible:outline-brand-500',
+        'size-[18px] shrink-0 cursor-pointer rounded border-ink-300 accent-ink-950',
         className,
       )}
       {...props}

@@ -8,8 +8,11 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { sanitizeText, slugify } from '@/lib/utils';
 import {
   appointmentUpdateSchema,
+  faqSchema,
+  grantAdminSchema,
   leadCreateSchema,
   leadUpdateSchema,
+  locationSchema,
   propertyFormSchema,
   settingsSchema,
   testimonialSchema,
@@ -43,7 +46,7 @@ export async function saveProperty(raw: unknown): Promise<ActionResult<{ id: str
     return { ok: false, error: 'Identifiant de terrain ou de photo invalide.' };
   }
 
-  const { data: existing } = await supabase.from('properties').select('id, slug').eq('id', v.id).maybeSingle();
+  const { data: existing } = await supabase.from('properties').select('id, slug, archived_at').eq('id', v.id).maybeSingle();
 
   const row = {
     id: v.id,
@@ -72,8 +75,11 @@ export async function saveProperty(raw: unknown): Promise<ActionResult<{ id: str
     nearby: v.nearby.map((n) => ({ ...n, name: sanitizeText(n.name) })),
     amenities: v.amenities.map(sanitizeText).filter(Boolean),
     cadastral_plan_url: v.cadastral_plan_url,
-    is_featured: v.is_featured,
-    is_published: v.is_published,
+    seo_title: v.seo_title ? sanitizeText(v.seo_title) : null,
+    seo_description: v.seo_description ? sanitizeText(v.seo_description) : null,
+    is_featured: v.publication === 'archive' ? false : v.is_featured,
+    is_published: v.publication === 'publie',
+    archived_at: v.publication === 'archive' ? ((existing?.archived_at as string | null) ?? new Date().toISOString()) : null,
   };
 
   const { error } = await supabase.from('properties').upsert(row, { onConflict: 'id' });
@@ -195,6 +201,7 @@ export async function duplicateProperty(id: string): Promise<ActionResult<{ id: 
     title: `${rest.title} (copie)`.slice(0, 140),
     is_published: false,
     is_featured: false,
+    archived_at: null,
     views_count: 0,
     created_at: undefined,
     updated_at: undefined,
@@ -231,11 +238,33 @@ export async function togglePublished(id: string, published: boolean): Promise<A
   const auth = await requireAdminForAction();
   if ('error' in auth) return { ok: false, error: auth.error };
   if (!UUID_RE.test(id)) return { ok: false, error: 'Identifiant invalide.' };
-  const { data, error } = await auth.supabase.from('properties').update({ is_published: published }).eq('id', id).select('slug').single();
+  const { data, error } = await auth.supabase
+    .from('properties')
+    .update(published ? { is_published: true, archived_at: null } : { is_published: false })
+    .eq('id', id)
+    .select('slug')
+    .single();
   if (error) return { ok: false, error: error.message };
   revalidatePublic(data?.slug);
   revalidatePath('/admin/terrains');
   return { ok: true, message: published ? 'Terrain publié.' : 'Terrain dépublié.' };
+}
+
+/** Archive (retire du site et des listes) ou restaure un terrain en brouillon. */
+export async function setPropertyArchived(id: string, archived: boolean): Promise<ActionResult> {
+  const auth = await requireAdminForAction();
+  if ('error' in auth) return { ok: false, error: auth.error };
+  if (!UUID_RE.test(id)) return { ok: false, error: 'Identifiant invalide.' };
+  const { data, error } = await auth.supabase
+    .from('properties')
+    .update(archived ? { archived_at: new Date().toISOString(), is_published: false, is_featured: false } : { archived_at: null })
+    .eq('id', id)
+    .select('slug')
+    .single();
+  if (error) return { ok: false, error: error.message };
+  revalidatePublic(data?.slug);
+  revalidatePath('/admin/terrains');
+  return { ok: true, message: archived ? 'Terrain archivé.' : 'Terrain restauré en brouillon.' };
 }
 
 /** Propose un slug unique à partir du titre. */
@@ -347,6 +376,99 @@ export async function saveSettings(raw: unknown): Promise<ActionResult> {
   if (error) return { ok: false, error: error.message };
   revalidatePath('/', 'layout');
   return { ok: true, message: 'Paramètres enregistrés.' };
+}
+
+export async function saveFaq(raw: unknown, id?: string): Promise<ActionResult> {
+  const auth = await requireAdminForAction();
+  if ('error' in auth) return { ok: false, error: auth.error };
+  const parsed = faqSchema.safeParse(raw);
+  if (!parsed.success) return { ok: false, error: 'Certains champs sont invalides.', fieldErrors: parsed.error.flatten().fieldErrors };
+  const values = { ...parsed.data, question: sanitizeText(parsed.data.question), answer: sanitizeText(parsed.data.answer) };
+  const { error } =
+    id && UUID_RE.test(id)
+      ? await auth.supabase.from('faq').update(values).eq('id', id)
+      : await auth.supabase.from('faq').insert(values);
+  if (error) return { ok: false, error: error.message };
+  revalidatePath('/');
+  revalidatePath('/faq');
+  revalidatePath('/admin/faq');
+  return { ok: true, message: 'Question enregistrée.' };
+}
+
+export async function deleteFaq(id: string): Promise<ActionResult> {
+  const auth = await requireAdminForAction();
+  if ('error' in auth) return { ok: false, error: auth.error };
+  if (!UUID_RE.test(id)) return { ok: false, error: 'Identifiant invalide.' };
+  const { error } = await auth.supabase.from('faq').delete().eq('id', id);
+  if (error) return { ok: false, error: error.message };
+  revalidatePath('/');
+  revalidatePath('/faq');
+  revalidatePath('/admin/faq');
+  return { ok: true, message: 'Question supprimée.' };
+}
+
+/* =============================================================== Localisations */
+
+export async function saveLocation(raw: unknown, id?: string): Promise<ActionResult> {
+  const auth = await requireAdminForAction();
+  if ('error' in auth) return { ok: false, error: auth.error };
+  const parsed = locationSchema.safeParse(raw);
+  if (!parsed.success) return { ok: false, error: 'Certains champs sont invalides.', fieldErrors: parsed.error.flatten().fieldErrors };
+  const values = {
+    ...parsed.data,
+    name: sanitizeText(parsed.data.name),
+    city: sanitizeText(parsed.data.city),
+    description: parsed.data.description ? sanitizeText(parsed.data.description) : null,
+  };
+  const { error } =
+    id && UUID_RE.test(id)
+      ? await auth.supabase.from('locations').update(values).eq('id', id)
+      : await auth.supabase.from('locations').insert(values);
+  if (error) {
+    if (error.code === '23505') return { ok: false, error: 'Ce slug est déjà utilisé.', fieldErrors: { slug: ['Déjà utilisé.'] } };
+    return { ok: false, error: error.message };
+  }
+  revalidatePublic();
+  revalidatePath('/admin/localisations');
+  return { ok: true, message: 'Localisation enregistrée.' };
+}
+
+export async function deleteLocation(id: string): Promise<ActionResult> {
+  const auth = await requireAdminForAction();
+  if ('error' in auth) return { ok: false, error: auth.error };
+  if (!UUID_RE.test(id)) return { ok: false, error: 'Identifiant invalide.' };
+  const { count } = await auth.supabase.from('properties').select('id', { count: 'exact', head: true }).eq('location_id', id);
+  if ((count ?? 0) > 0) {
+    return { ok: false, error: `Cette zone est utilisée par ${count} terrain(s). Réaffectez-les avant de la supprimer.` };
+  }
+  const { error } = await auth.supabase.from('locations').delete().eq('id', id);
+  if (error) return { ok: false, error: error.message };
+  revalidatePublic();
+  revalidatePath('/admin/localisations');
+  return { ok: true, message: 'Localisation supprimée.' };
+}
+
+/* =============================================================== Utilisateurs */
+
+export async function grantAdminAccess(raw: unknown): Promise<ActionResult> {
+  const auth = await requireAdminForAction();
+  if ('error' in auth) return { ok: false, error: auth.error };
+  const parsed = grantAdminSchema.safeParse(raw);
+  if (!parsed.success) return { ok: false, error: 'Adresse e-mail invalide.', fieldErrors: parsed.error.flatten().fieldErrors };
+  const { error } = await auth.supabase.rpc('grant_admin', { p_email: parsed.data.email, p_role: parsed.data.role });
+  if (error) return { ok: false, error: error.message };
+  revalidatePath('/admin/utilisateurs');
+  return { ok: true, message: 'Accès accordé.' };
+}
+
+export async function revokeAdminAccess(userId: string): Promise<ActionResult> {
+  const auth = await requireAdminForAction();
+  if ('error' in auth) return { ok: false, error: auth.error };
+  if (!UUID_RE.test(userId)) return { ok: false, error: 'Identifiant invalide.' };
+  const { error } = await auth.supabase.rpc('revoke_admin', { p_user_id: userId });
+  if (error) return { ok: false, error: error.message };
+  revalidatePath('/admin/utilisateurs');
+  return { ok: true, message: 'Accès retiré.' };
 }
 
 /* =============================================================== Session */

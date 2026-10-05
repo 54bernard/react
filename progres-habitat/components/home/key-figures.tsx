@@ -12,17 +12,18 @@ function Counter({ figure }: { figure: KeyFigure }) {
     const el = ref.current;
     if (!el || !('IntersectionObserver' in window)) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    // Déjà visible au chargement : pas d'animation (évite un saut 0 → valeur sous les yeux)
+    if (el.getBoundingClientRect().top < window.innerHeight) return;
     let frame = 0;
     setValue(0);
     const observer = new IntersectionObserver(([entry]) => {
       if (!entry?.isIntersecting) return;
       observer.disconnect();
       const start = performance.now();
-      const duration = 1400;
+      const duration = 1600;
       const tick = (now: number) => {
         const t = Math.min(1, (now - start) / duration);
-        const eased = 1 - Math.pow(1 - t, 4);
-        setValue(Math.round(eased * figure.value));
+        setValue(Math.round((1 - Math.pow(1 - t, 4)) * figure.value));
         if (t < 1) frame = requestAnimationFrame(tick);
       };
       frame = requestAnimationFrame(tick);
@@ -36,24 +37,29 @@ function Counter({ figure }: { figure: KeyFigure }) {
 
   return (
     <span ref={ref} className="tabular-nums">
-      {figure.prefix && <span className="mr-1.5 font-sans text-base font-medium text-ink-500 sm:text-lg">{figure.prefix.trim()}</span>}
+      {figure.prefix && <span className="mr-2 align-middle font-sans text-sm font-medium tracking-normal text-ink-500">{figure.prefix.trim()}</span>}
       {value.toLocaleString('fr-FR')}
-      {figure.suffix && <span className="ml-1 text-2xl sm:text-3xl">{figure.suffix}</span>}
+      {figure.suffix}
     </span>
   );
 }
 
 export function KeyFigures({ figures }: { figures: KeyFigure[] }) {
   return (
-    <section aria-label="Chiffres clés" className="relative z-10 border-b border-ink-100 bg-white">
-      <dl className="container-page grid grid-cols-2 divide-ink-100 lg:grid-cols-4 lg:divide-x">
+    <section aria-label="Chiffres clés" className="border-b border-ink-950/[0.06] bg-sand-50">
+      <dl className="container-page grid grid-cols-2 lg:grid-cols-4">
         {figures.map((f, i) => (
           <div
             key={f.label}
-            className={`flex flex-col-reverse justify-end gap-1 px-4 py-7 sm:px-6 lg:py-10 ${i % 2 === 1 ? 'border-l border-ink-100 lg:border-l-0' : ''} ${i >= 2 ? 'border-t border-ink-100 lg:border-t-0' : ''}`}
+            className={[
+              'flex flex-col-reverse justify-end gap-2 py-8 sm:py-10 lg:py-14',
+              i % 2 === 1 ? 'border-l border-ink-950/[0.06] pl-5 sm:pl-8' : 'pr-5',
+              i >= 2 ? 'border-t border-ink-950/[0.06] lg:border-t-0' : '',
+              i > 0 ? 'lg:border-l lg:border-ink-950/[0.06] lg:pl-10' : '',
+            ].join(' ')}
           >
-            <dt className="text-sm text-ink-500">{f.label}</dt>
-            <dd className="font-display text-4xl font-medium tracking-tight whitespace-nowrap text-ink-900 sm:text-5xl">
+            <dt className="text-[13px] text-ink-500 sm:text-sm">{f.label}</dt>
+            <dd className="font-display text-[2.5rem] leading-none tracking-tight whitespace-nowrap text-ink-950 sm:text-5xl lg:text-[3.5rem]">
               <Counter figure={f} />
             </dd>
           </div>

@@ -41,6 +41,18 @@ export function ImageManager({ propertyId, value, onChange, disabled }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
   const [uploading, setUploading] = useState(0);
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [overIndex, setOverIndex] = useState<number | null>(null);
+
+  /** Réordonne par glisser-déposer (les flèches restent disponibles au clavier). */
+  const reorder = (from: number, to: number) => {
+    if (from === to) return;
+    const next = [...value];
+    const [moved] = next.splice(from, 1);
+    if (!moved) return;
+    next.splice(to, 0, moved);
+    onChange(next);
+  };
 
   async function upload(files: FileList | File[]) {
     if (disabled) {
@@ -112,6 +124,7 @@ export function ImageManager({ propertyId, value, onChange, disabled }: Props) {
         onClick={() => inputRef.current?.click()}
         onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && inputRef.current?.click()}
         onDragOver={(e) => {
+          if (!e.dataTransfer.types.includes('Files')) return;
           e.preventDefault();
           setDragging(true);
         }}
@@ -122,8 +135,8 @@ export function ImageManager({ propertyId, value, onChange, disabled }: Props) {
           if (e.dataTransfer.files.length) void upload(e.dataTransfer.files);
         }}
         className={cn(
-          'flex cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed px-6 py-10 text-center transition',
-          dragging ? 'border-brand-500 bg-brand-50' : 'border-ink-200 bg-ink-50/50 hover:border-ink-300',
+          'flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed px-6 py-10 text-center transition',
+          dragging ? 'border-ink-950 bg-ink-50' : 'border-ink-200 bg-ink-50/40 hover:border-ink-400',
         )}
       >
         {uploading > 0 ? <Loader2 className="size-8 animate-spin text-brand-600" /> : <UploadCloud className="size-8 text-ink-400" />}
@@ -147,11 +160,46 @@ export function ImageManager({ propertyId, value, onChange, disabled }: Props) {
       {value.length > 0 && (
         <ul className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {value.map((img, i) => (
-            <li key={img.storage_path ?? img.url} className={cn('overflow-hidden rounded-2xl border bg-white', img.is_main ? 'border-brand-500 ring-2 ring-brand-500/20' : 'border-ink-100')}>
-              <div className="relative aspect-[4/3] bg-sand-100">
+            <li
+              key={img.storage_path ?? img.url}
+              draggable
+              onDragStart={(e) => {
+                setDragIndex(i);
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', String(i));
+              }}
+              onDragOver={(e) => {
+                if (dragIndex === null) return;
+                e.preventDefault();
+                setOverIndex(i);
+              }}
+              onDragLeave={() => setOverIndex((o) => (o === i ? null : o))}
+              onDrop={(e) => {
+                if (dragIndex === null) return;
+                e.preventDefault();
+                e.stopPropagation();
+                reorder(dragIndex, i);
+                setDragIndex(null);
+                setOverIndex(null);
+              }}
+              onDragEnd={() => {
+                setDragIndex(null);
+                setOverIndex(null);
+              }}
+              className={cn(
+                'overflow-hidden rounded-xl border bg-white transition-[opacity,box-shadow,border-color]',
+                img.is_main ? 'border-ink-950' : 'border-ink-100',
+                dragIndex === i && 'opacity-40',
+                overIndex === i && dragIndex !== i && 'ring-2 ring-brand-500 ring-offset-2',
+              )}
+            >
+              <div className="relative aspect-[4/3] cursor-grab bg-sand-100 active:cursor-grabbing">
                 <Image src={img.url} alt={img.alt || `Photo ${i + 1}`} fill sizes="300px" className="object-cover" />
+                <span className="absolute top-2 right-2 rounded-md bg-ink-950/70 px-1.5 py-0.5 text-[11px] font-semibold text-white tabular-nums backdrop-blur">
+                  {i + 1}
+                </span>
                 {img.is_main && (
-                  <span className="absolute top-2 left-2 inline-flex items-center gap-1 rounded-full bg-brand-600 px-2.5 py-1 text-xs font-semibold text-white">
+                  <span className="absolute top-2 left-2 inline-flex items-center gap-1 rounded-full bg-ink-950 px-2.5 py-1 text-xs font-semibold text-white">
                     <Star className="size-3 fill-white" aria-hidden="true" /> Principale
                   </span>
                 )}

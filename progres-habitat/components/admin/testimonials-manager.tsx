@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import { deleteTestimonial, saveTestimonial } from '@/app/admin/actions';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { useConfirm } from '@/components/ui/confirm-dialog';
 import { Checkbox, Field, Input, Select, Textarea } from '@/components/ui/form-controls';
 import { EmptyState } from '@/components/ui/misc';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
@@ -82,20 +83,21 @@ export function TestimonialsManager({ items }: { items: Testimonial[] }) {
   const router = useRouter();
   const [editing, setEditing] = useState<Testimonial | 'new' | null>(null);
   const [pending, start] = useTransition();
+  const confirm = useConfirm();
 
   return (
     <>
       <div className="mb-4 flex justify-end">
-        <Button onClick={() => setEditing('new')}>
+        <Button size="sm" className="rounded-xl" onClick={() => setEditing('new')}>
           <Plus /> Ajouter un témoignage
         </Button>
       </div>
       {items.length === 0 ? (
-        <EmptyState icon={<MessageSquareQuote className="size-6" />} title="Aucun témoignage" description="La section Témoignages est masquée sur le site tant qu’aucun avis n’est publié." />
+        <EmptyState icon={<MessageSquareQuote />} title="Aucun témoignage" description="La section Témoignages est masquée sur le site tant qu’aucun avis n’est publié." />
       ) : (
         <ul className="grid gap-4 md:grid-cols-2">
           {items.map((t) => (
-            <li key={t.id} className="flex flex-col rounded-2xl border border-ink-100 bg-white p-5 shadow-soft">
+            <li key={t.id} className="flex flex-col rounded-2xl border border-ink-100 bg-white p-5">
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <p className="font-semibold text-ink-900">{t.name}</p>
@@ -118,8 +120,9 @@ export function TestimonialsManager({ items }: { items: Testimonial[] }) {
                   size="sm"
                   disabled={pending}
                   className="text-red-600 hover:bg-red-50"
-                  onClick={() => {
-                    if (!window.confirm('Supprimer ce témoignage ?')) return;
+                  onClick={async () => {
+                    const ok = await confirm({ title: `Supprimer le témoignage de ${t.name} ?`, confirmLabel: 'Supprimer' });
+                    if (!ok) return;
                     start(async () => {
                       const res = await deleteTestimonial(t.id);
                       if (res.ok) toast.success(res.message);

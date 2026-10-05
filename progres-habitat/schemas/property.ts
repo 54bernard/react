@@ -78,8 +78,10 @@ export const propertyFormSchema = z
     documents: z.array(documentInputSchema).max(20),
     images: z.array(imageInputSchema).max(30),
     cadastral_plan_url: nullableText(500),
+    seo_title: nullableText(70),
+    seo_description: nullableText(170),
     is_featured: z.boolean(),
-    is_published: z.boolean(),
+    publication: z.enum(['brouillon', 'publie', 'archive']),
   })
   .refine((v) => !v.payment_options.includes('echelonne') || (v.installment_months ?? 0) > 0, {
     path: ['installment_months'],
@@ -157,3 +159,30 @@ export const settingsSchema = z.object({
     .max(4),
 });
 export type SettingsValues = z.input<typeof settingsSchema>;
+
+export const locationSchema = z.object({
+  name: text(80).min(2, 'Nom requis.'),
+  slug: text(80)
+    .min(2, 'Slug requis.')
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Uniquement lettres minuscules, chiffres et tirets.'),
+  city: text(80).min(2, 'Ville requise.'),
+  description: nullableText(400),
+  image_url: nullableText(500),
+  latitude: z.coerce.number().min(-90).max(90),
+  longitude: z.coerce.number().min(-180).max(180),
+});
+export type LocationValues = z.input<typeof locationSchema>;
+
+export const faqSchema = z.object({
+  question: text(200).min(5, 'Question trop courte.'),
+  answer: text(2000).min(10, 'Réponse trop courte.'),
+  position: z.coerce.number().int().min(0).max(1000),
+  is_published: z.boolean(),
+});
+export type FaqValues = z.input<typeof faqSchema>;
+
+export const grantAdminSchema = z.object({
+  email: z.string().trim().email('Adresse e-mail invalide.'),
+  role: z.enum(['admin', 'editor']),
+});
+export type GrantAdminValues = z.input<typeof grantAdminSchema>;

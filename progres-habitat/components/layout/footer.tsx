@@ -1,10 +1,12 @@
 import Link from 'next/link';
-import { Clock, Mail, MapPin, Phone } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import { Logo } from '@/components/layout/logo';
 import { FacebookIcon, InstagramIcon, LinkedinIcon, TiktokIcon, WhatsAppIcon } from '@/components/layout/whatsapp-icon';
 import { siteConfig } from '@/lib/site-config';
 import { phoneHref, whatsappLink } from '@/lib/whatsapp';
 import type { Location, SiteSettings } from '@/types';
+
+const linkClass = 'text-[15px] text-white/65 transition-colors duration-300 hover:text-white';
 
 export function Footer({ settings, zones }: { settings: SiteSettings; zones: Location[] }) {
   const socials = [
@@ -15,16 +17,36 @@ export function Footer({ settings, zones }: { settings: SiteSettings; zones: Loc
   ].filter((s): s is { href: string; label: string; Icon: typeof FacebookIcon } => Boolean(s.href));
 
   return (
-    <footer className="border-t border-ink-100 bg-white" aria-labelledby="footer-title">
+    <footer className="bg-ink-950 text-white" aria-labelledby="footer-title">
       <h2 id="footer-title" className="sr-only">
         Pied de page
       </h2>
-      <div className="container-page grid gap-12 py-16 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.3fr] lg:py-20">
-        <div className="max-w-sm">
-          <Logo />
-          <p className="mt-5 leading-relaxed text-ink-500">
-            {settings.tagline}. Terrains vérifiés à {zones.length > 0 ? 'Ouagadougou et Tenkodogo' : settings.city},
-            accompagnement juridique et construction par nos équipes BTP.
+
+      <div className="container-page grid gap-10 border-b border-white/10 py-16 lg:grid-cols-[1.2fr_1fr] lg:items-end lg:py-24">
+        <p className="max-w-xl text-h2 !text-white">{settings.tagline}.</p>
+        <div className="flex flex-col gap-3 sm:flex-row lg:justify-end">
+          <a
+            href={whatsappLink(settings.whatsapp, 'Bonjour Progrès Habitat !')}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group inline-flex h-13 items-center justify-center gap-2 rounded-full bg-white px-7 text-[15px] font-semibold text-ink-950 transition-colors hover:bg-sand-100"
+          >
+            <WhatsAppIcon className="size-4" /> Écrire sur WhatsApp
+          </a>
+          <a
+            href={phoneHref(settings.phone)}
+            className="inline-flex h-13 items-center justify-center rounded-full border border-white/25 px-7 text-[15px] font-semibold text-white transition-colors hover:border-white"
+          >
+            {settings.phone}
+          </a>
+        </div>
+      </div>
+
+      <div className="container-page grid gap-12 py-16 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1.2fr] lg:py-20">
+        <div className="max-w-xs">
+          <Logo tone="light" />
+          <p className="mt-6 text-[15px] leading-relaxed text-white/60">
+            Terrains vérifiés à Ouagadougou et Tenkodogo, accompagnement juridique et construction par nos équipes BTP.
           </p>
           {socials.length > 0 && (
             <ul className="mt-6 flex gap-2" aria-label="Réseaux sociaux">
@@ -35,9 +57,9 @@ export function Footer({ settings, zones }: { settings: SiteSettings; zones: Loc
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={label}
-                    className="grid size-10 place-items-center rounded-full border border-ink-200 text-ink-600 transition hover:border-brand-500 hover:bg-brand-50 hover:text-brand-700"
+                    className="grid size-10 place-items-center rounded-full border border-white/15 text-white/75 transition-colors hover:border-white hover:text-white"
                   >
-                    <Icon className="size-[18px]" />
+                    <Icon className="size-[17px]" />
                   </a>
                 </li>
               ))}
@@ -46,11 +68,11 @@ export function Footer({ settings, zones }: { settings: SiteSettings; zones: Loc
         </div>
 
         <nav aria-label="Navigation du pied de page">
-          <h3 className="text-sm font-semibold tracking-wide text-ink-900">Navigation</h3>
+          <h3 className="text-[12px] font-semibold tracking-[0.12em] text-white/45 uppercase">Navigation</h3>
           <ul className="mt-5 space-y-3">
             {siteConfig.nav.map((item) => (
               <li key={item.href}>
-                <Link href={item.href} className="text-ink-500 transition hover:text-brand-700">
+                <Link href={item.href} className={linkClass}>
                   {item.label}
                 </Link>
               </li>
@@ -59,11 +81,11 @@ export function Footer({ settings, zones }: { settings: SiteSettings; zones: Loc
         </nav>
 
         <div>
-          <h3 className="text-sm font-semibold tracking-wide text-ink-900">Nos zones</h3>
+          <h3 className="text-[12px] font-semibold tracking-[0.12em] text-white/45 uppercase">Nos zones</h3>
           <ul className="mt-5 space-y-3">
             {zones.slice(0, 6).map((zone) => (
               <li key={zone.id}>
-                <Link href={`/terrains?zone=${zone.slug}`} className="text-ink-500 transition hover:text-brand-700">
+                <Link href={`/terrains?zone=${zone.slug}`} className={linkClass}>
                   Terrains à {zone.name}
                 </Link>
               </li>
@@ -72,56 +94,41 @@ export function Footer({ settings, zones }: { settings: SiteSettings; zones: Loc
         </div>
 
         <address className="not-italic">
-          <h3 className="text-sm font-semibold tracking-wide text-ink-900">Contact</h3>
-          <ul className="mt-5 space-y-4 text-ink-600">
+          <h3 className="text-[12px] font-semibold tracking-[0.12em] text-white/45 uppercase">Contact</h3>
+          <ul className="mt-5 space-y-3 text-[15px] text-white/65">
             <li>
-              <a href={phoneHref(settings.phone)} className="flex items-start gap-3 transition hover:text-brand-700">
-                <Phone className="mt-0.5 size-4.5 shrink-0 text-brand-600" aria-hidden="true" />
+              <a href={phoneHref(settings.phone)} className={linkClass}>
                 {settings.phone}
-              </a>
-            </li>
-            <li>
-              <a
-                href={whatsappLink(settings.whatsapp, 'Bonjour Progrès Habitat !')}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-start gap-3 transition hover:text-brand-700"
-              >
-                <WhatsAppIcon className="mt-0.5 size-4.5 shrink-0 text-brand-600" />
-                WhatsApp
               </a>
             </li>
             {settings.email && (
               <li>
-                <a href={`mailto:${settings.email}`} className="flex items-start gap-3 break-all transition hover:text-brand-700">
-                  <Mail className="mt-0.5 size-4.5 shrink-0 text-brand-600" aria-hidden="true" />
+                <a href={`mailto:${settings.email}`} className={`${linkClass} break-all`}>
                   {settings.email}
                 </a>
               </li>
             )}
-            <li className="flex items-start gap-3">
-              <MapPin className="mt-0.5 size-4.5 shrink-0 text-brand-600" aria-hidden="true" />
-              {settings.address}
+            <li>{settings.address}</li>
+            {settings.opening_hours && <li>{settings.opening_hours}</li>}
+            <li>
+              <Link href="/contact" className="group inline-flex items-center gap-1 font-medium text-white">
+                <span className="link-underline">Nous rendre visite</span>
+                <ArrowUpRight className="size-4" aria-hidden="true" />
+              </Link>
             </li>
-            {settings.opening_hours && (
-              <li className="flex items-start gap-3">
-                <Clock className="mt-0.5 size-4.5 shrink-0 text-brand-600" aria-hidden="true" />
-                {settings.opening_hours}
-              </li>
-            )}
           </ul>
         </address>
       </div>
 
-      <div className="border-t border-ink-100">
-        <div className="container-page flex flex-col gap-4 py-6 text-sm text-ink-500 md:flex-row md:items-center md:justify-between">
+      <div className="border-t border-white/10">
+        <div className="container-page flex flex-col gap-4 py-7 text-[13px] text-white/45 md:flex-row md:items-center md:justify-between">
           <p>
             © {new Date().getFullYear()} {settings.company_name}. Tous droits réservés.
           </p>
           <ul className="flex flex-wrap gap-x-6 gap-y-2">
             {siteConfig.legal.map((item) => (
               <li key={item.href}>
-                <Link href={item.href} className="transition hover:text-ink-900">
+                <Link href={item.href} className="transition-colors hover:text-white">
                   {item.label}
                 </Link>
               </li>

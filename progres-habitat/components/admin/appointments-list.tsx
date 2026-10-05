@@ -53,38 +53,40 @@ function StatusSelect({ appointment }: { appointment: AppointmentWithProperty })
   );
 }
 
-export function AppointmentsList({ appointments }: { appointments: AppointmentWithProperty[] }) {
+export function AppointmentsList({ appointments, footer }: { appointments: AppointmentWithProperty[]; footer?: React.ReactNode }) {
   if (appointments.length === 0) {
-    return <EmptyState icon={<CalendarDays className="size-6" />} title="Aucun rendez-vous" description="Les demandes de visite envoyées depuis le site apparaîtront ici." />;
+    return <EmptyState icon={<CalendarDays />} title="Aucune demande de visite" description="Les demandes envoyées depuis les fiches terrain apparaîtront ici." />;
   }
   const groups = appointments.reduce<Record<string, AppointmentWithProperty[]>>((acc, a) => {
     (acc[a.preferred_date] ??= []).push(a);
     return acc;
   }, {});
   const today = new Date().toISOString().slice(0, 10);
+  // Midi UTC : évite tout décalage de jour lié au fuseau horaire
+  const asDate = (d: string) => `${d}T12:00:00Z`;
 
   return (
     <div className="space-y-8">
       {Object.entries(groups).map(([date, items]) => (
         <section key={date} aria-labelledby={`jour-${date}`}>
-          <h2 id={`jour-${date}`} className={cn('mb-3 text-sm font-semibold tracking-wide uppercase', date < today ? 'text-ink-400' : 'text-ink-700')}>
-            {formatDate(date, { weekday: 'long', day: 'numeric', month: 'long' })}
-            {date === today && <span className="ml-2 rounded-full bg-accent-500 px-2 py-0.5 text-[11px] text-white normal-case">Aujourd’hui</span>}
+          <h2 id={`jour-${date}`} className={cn('mb-3 flex items-center gap-2 text-[13px] font-semibold first-letter:uppercase', date < today ? 'text-ink-400' : 'text-ink-800')}>
+            {formatDate(asDate(date), { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' })}
+            {date === today && <span className="rounded-full bg-ink-950 px-2 py-0.5 text-[11px] font-semibold text-white">Aujourd’hui</span>}
           </h2>
-          <ul className="space-y-3">
+          <ul className="divide-y divide-ink-100 overflow-hidden rounded-2xl border border-ink-100 bg-white">
             {items.map((a) => (
-              <li key={a.id} className="flex flex-col gap-4 rounded-2xl border border-ink-100 bg-white p-4 shadow-soft sm:flex-row sm:items-center">
-                <span className="inline-flex w-20 items-center gap-1.5 font-semibold text-ink-900">
+              <li key={a.id} className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:gap-4 sm:px-5">
+                <span className="inline-flex w-20 items-center gap-1.5 font-semibold text-ink-950 tabular-nums">
                   <Clock className="size-4 text-ink-400" aria-hidden="true" /> {a.preferred_time}
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="font-semibold text-ink-900">{a.name}</p>
+                  <p className="font-medium text-ink-950">{a.name}</p>
                   <p className="text-sm text-ink-500">
                     {a.phone}
                     {a.property && (
                       <>
                         {' · '}
-                        <Link href={`/admin/terrains/${a.property.id}`} className="text-brand-700 hover:underline">
+                        <Link href={`/admin/terrains/${a.property.id}`} className="font-medium text-ink-800 underline decoration-ink-300 underline-offset-2 hover:decoration-ink-900">
                           {a.property.reference}
                         </Link>
                       </>
@@ -97,7 +99,7 @@ export function AppointmentsList({ appointments }: { appointments: AppointmentWi
                     <Phone className="size-4" />
                   </a>
                   <a
-                    href={whatsappLink(a.phone, `Bonjour ${a.name.split(' ')[0]}, c’est Progrès Habitat au sujet de votre visite du ${formatDate(a.preferred_date, { day: 'numeric', month: 'long' })} à ${a.preferred_time}.`)}
+                    href={whatsappLink(a.phone, `Bonjour ${a.name.split(' ')[0]}, c’est Progrès Habitat au sujet de votre visite du ${formatDate(asDate(a.preferred_date), { day: 'numeric', month: 'long', timeZone: 'UTC' })} à ${a.preferred_time}.`)}
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={`Écrire à ${a.name} sur WhatsApp`}
@@ -112,6 +114,7 @@ export function AppointmentsList({ appointments }: { appointments: AppointmentWi
           </ul>
         </section>
       ))}
+      {footer && <div className="overflow-hidden rounded-2xl border border-ink-100 bg-white [&>div]:border-t-0">{footer}</div>}
     </div>
   );
 }

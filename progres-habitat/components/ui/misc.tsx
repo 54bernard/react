@@ -6,7 +6,7 @@ export function Skeleton({ className }: { className?: string }) {
 }
 
 export function Card({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn('rounded-2xl border border-ink-100 bg-white shadow-soft', className)} {...props} />;
+  return <div className={cn('rounded-2xl border border-ink-100 bg-white', className)} {...props} />;
 }
 
 interface SectionHeadingProps {
@@ -16,9 +16,12 @@ interface SectionHeadingProps {
   align?: 'left' | 'center';
   className?: string;
   as?: 'h1' | 'h2';
+  id?: string;
   action?: React.ReactNode;
+  tone?: 'default' | 'inverse';
 }
 
+/** En-tête de section : sur-titre discret, titre éditorial, chapeau, action alignée à droite. */
 export function SectionHeading({
   eyebrow,
   title,
@@ -26,22 +29,29 @@ export function SectionHeading({
   align = 'left',
   className,
   as: Heading = 'h2',
+  id,
   action,
+  tone = 'default',
 }: SectionHeadingProps) {
+  const inverse = tone === 'inverse';
   return (
     <div
       className={cn(
-        'flex flex-col gap-6',
-        align === 'center' ? 'items-center text-center' : 'md:flex-row md:items-end md:justify-between',
+        'flex flex-col gap-8',
+        align === 'center' ? 'items-center text-center' : 'lg:flex-row lg:items-end lg:justify-between lg:gap-16',
         className,
       )}
     >
       <div className={cn('max-w-2xl', align === 'center' && 'mx-auto')}>
-        {eyebrow && <p className="eyebrow mb-3">{eyebrow}</p>}
-        <Heading className="font-display text-3xl leading-[1.12] font-medium tracking-tight sm:text-4xl lg:text-[2.75rem]">
+        {eyebrow && <p className={cn('eyebrow mb-5', inverse && '!text-white/60')}>{eyebrow}</p>}
+        <Heading id={id} className={cn('text-h2', inverse && '!text-white')}>
           {title}
         </Heading>
-        {description && <p className="mt-4 text-base leading-relaxed text-ink-500 sm:text-lg">{description}</p>}
+        {description && (
+          <p className={cn('mt-5 max-w-xl text-lead', inverse ? 'text-white/65' : 'text-ink-500', align === 'center' && 'mx-auto')}>
+            {description}
+          </p>
+        )}
       </div>
       {action && <div className="shrink-0">{action}</div>}
     </div>
@@ -64,13 +74,13 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        'flex flex-col items-center rounded-3xl border border-dashed border-ink-200 bg-white px-6 py-16 text-center',
+        'flex flex-col items-center rounded-2xl border border-dashed border-ink-200 bg-white px-6 py-16 text-center',
         className,
       )}
     >
-      {icon && <div className="mb-5 grid size-14 place-items-center rounded-2xl bg-brand-50 text-brand-600">{icon}</div>}
-      <h3 className="text-lg font-semibold">{title}</h3>
-      {description && <p className="mt-2 max-w-md text-ink-500">{description}</p>}
+      {icon && <div className="mb-5 grid size-12 place-items-center rounded-full bg-sand-100 text-ink-700 [&_svg]:size-5">{icon}</div>}
+      <h3 className="text-base font-semibold text-ink-950">{title}</h3>
+      {description && <p className="mt-2 max-w-md text-sm text-ink-500">{description}</p>}
       {action && <div className="mt-6">{action}</div>}
     </div>
   );

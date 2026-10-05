@@ -15,7 +15,6 @@ import {
 } from '@/components/home/sections';
 import { toMarker } from '@/components/map/types';
 import { JsonLd } from '@/components/seo/json-ld';
-import { Button } from '@/components/ui/button';
 import { SectionHeading } from '@/components/ui/misc';
 import { faqJsonLd, pageMetadata } from '@/lib/seo';
 import { getFaq, getKeyFigures, getSettings, getTestimonials } from '@/services/content';
@@ -58,38 +57,38 @@ export default async function HomePage() {
       <WhyUs />
       <PurchaseProcess />
 
-      <section className="py-20 lg:py-28" aria-labelledby="map-title">
+      <section className="section-y" aria-labelledby="map-title">
         <div className="container-page">
           <SectionHeading
+            id="map-title"
             eyebrow="Carte interactive"
-            title={<span id="map-title">Tous nos terrains, sur la carte</span>}
-            description="Survolez un terrain pour le repérer, cliquez sur un prix pour voir le détail."
+            title="Tous nos terrains, sur la carte."
+            description="Survolez un terrain pour le repérer, touchez un prix pour voir le détail."
             action={
-              <Button asChild variant="outline">
-                <Link href="/terrains?vue=carte">
-                  Ouvrir la carte complète <ArrowRight />
-                </Link>
-              </Button>
+              <Link href="/terrains?vue=carte" className="group inline-flex items-center gap-2 text-[15px] font-semibold text-ink-950">
+                <span className="link-underline">Ouvrir la carte complète</span>
+                <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />
+              </Link>
             }
           />
-          <div className="mt-12">
+          <div className="mt-12 lg:mt-16">
             <HomeMap markers={all.map(toMarker)} />
           </div>
         </div>
       </section>
 
       <Testimonials items={testimonials.items} isExample={testimonials.isExample} />
-      <CtaSection whatsapp={settings.whatsapp} phone={settings.phone} />
 
-      <section className="py-20 lg:py-28" aria-labelledby="faq-title">
-        <div className="container-page grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
+      <section className="section-y border-t border-ink-950/[0.06] bg-white" aria-labelledby="faq-title">
+        <div className="container-page grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-24">
           <SectionHeading
+            id="faq-title"
             eyebrow="Questions fréquentes"
-            title={<span id="faq-title">Vos questions, nos réponses</span>}
+            title="Vos questions, nos réponses."
             description={
               <>
                 Une autre question ?{' '}
-                <Link href="/contact" className="font-medium text-brand-700 underline-offset-4 hover:underline">
+                <Link href="/contact" className="font-medium text-ink-950 underline decoration-ink-300 underline-offset-4 hover:decoration-ink-950">
                   Contactez-nous
                 </Link>
                 , un conseiller vous répond rapidement.
@@ -99,6 +98,10 @@ export default async function HomePage() {
           <FaqList items={faq} />
         </div>
       </section>
+
+      <div className="bg-white pt-4">
+        <CtaSection whatsapp={settings.whatsapp} phone={settings.phone} />
+      </div>
     </>
   );
 }

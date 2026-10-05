@@ -5,6 +5,7 @@
 -- =====================================================================
 
 create extension if not exists "pgcrypto";
+create extension if not exists "pg_trgm";
 
 -- ---------------------------------------------------------------------
 -- Types énumérés
@@ -126,10 +127,15 @@ create table public.properties (
   amenities text[] not null default '{}',
   cadastral_plan_url text,
   is_featured boolean not null default false,
+  -- Brouillon : is_published = false ; Publié : true ; Archivé : archived_at renseigné (et non publié)
   is_published boolean not null default false,
+  archived_at timestamptz,
+  seo_title text check (seo_title is null or char_length(seo_title) <= 70),
+  seo_description text check (seo_description is null or char_length(seo_description) <= 170),
   views_count integer not null default 0,
   created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
+  updated_at timestamptz not null default now(),
+  constraint properties_archived_not_published check (archived_at is null or not is_published)
 );
 
 create index properties_published_idx on public.properties (is_published, status, created_at desc);
@@ -139,8 +145,11 @@ create index properties_location_idx on public.properties (location_id);
 create index properties_price_idx on public.properties (price);
 create index properties_surface_idx on public.properties (surface);
 create index properties_featured_idx on public.properties (is_featured) where is_featured;
-create index properties_search_idx on public.properties
-  using gin (to_tsvector('french', title || ' ' || description || ' ' || district || ' ' || city));
+-- Recherche textuelle (ILIKE '%mot%') accélérée par des index trigrammes
+create index properties_title_trgm_idx on public.properties using gin (title gin_trgm_ops);
+create index properties_district_trgm_idx on public.properties using gin (district gin_trgm_ops);
+create index properties_reference_trgm_idx on public.properties using gin (reference gin_trgm_ops);
+create index properties_archived_idx on public.properties (archived_at) where archived_at is not null;
 
 create table public.property_images (
   id uuid primary key default gen_random_uuid(),
@@ -193,6 +202,8 @@ create index leads_status_idx on public.leads (status, created_at desc);
 create index leads_property_idx on public.leads (property_id);
 create index leads_follow_up_idx on public.leads (follow_up_at) where follow_up_at is not null;
 create index leads_phone_recent_idx on public.leads (phone, created_at desc);
+create index leads_created_idx on public.leads (created_at desc);
+create index leads_name_trgm_idx on public.leads using gin (name gin_trgm_ops);
 
 create table public.appointments (
   id uuid primary key default gen_random_uuid(),
@@ -210,6 +221,7 @@ create table public.appointments (
 );
 
 create index appointments_date_idx on public.appointments (preferred_date, status);
+create index appointments_created_idx on public.appointments (created_at desc);
 create index appointments_property_idx on public.appointments (property_id);
 
 -- ---------------------------------------------------------------------
@@ -308,6 +320,84 @@ as $$
 $$;
 
 grant execute on function public.increment_property_view(text) to anon, authenticated;
+
+-- ---------------------------------------------------------------------
+-- Gestion des administrateurs (réservée aux administrateurs « admin »)
+-- Les comptes sont créés dans Supabase > Authentication ; ces fonctions
+-- leur donnent (ou retirent) l'accès au back-office.
+-- ---------------------------------------------------------------------
+create or replace function public.is_super_admin()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (select 1 from public.admins where user_id = auth.uid() and role = 'admin');
+$$;
+
+create or replace function public.list_admin_users()
+returns table (user_id uuid, email text, role admin_role, created_at timestamptz, last_sign_in_at timestamptz)
+language plpgsql
+stable
+security definer
+set search_path = public, auth
+as $$
+begin
+  if not public.is_admin() then
+    raise exception 'Accès refusé' using errcode = '42501';
+  end if;
+  return query
+    select a.user_id, u.email::text, a.role, a.created_at, u.last_sign_in_at
+      from public.admins a
+      join auth.users u on u.id = a.user_id
+     order by a.created_at;
+end;
+$$;
+
+create or replace function public.grant_admin(p_email text, p_role admin_role default 'editor')
+returns void
+language plpgsql
+security definer
+set search_path = public, auth
+as $$
+declare v_user uuid;
+begin
+  if not public.is_super_admin() then
+    raise exception 'Seul un administrateur peut gérer les accès.' using errcode = '42501';
+  end if;
+  select id into v_user from auth.users where lower(email) = lower(trim(p_email));
+  if v_user is null then
+    raise exception 'Aucun compte avec cet e-mail. Créez-le d''abord dans Supabase > Authentication.' using errcode = 'P0002';
+  end if;
+  insert into public.admins (user_id, role) values (v_user, p_role)
+  on conflict (user_id) do update set role = excluded.role;
+end;
+$$;
+
+create or replace function public.revoke_admin(p_user_id uuid)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if not public.is_super_admin() then
+    raise exception 'Seul un administrateur peut gérer les accès.' using errcode = '42501';
+  end if;
+  if p_user_id = auth.uid() then
+    raise exception 'Vous ne pouvez pas retirer votre propre accès.' using errcode = '42501';
+  end if;
+  delete from public.admins where user_id = p_user_id;
+end;
+$$;
+
+revoke all on function public.list_admin_users() from public, anon;
+revoke all on function public.grant_admin(text, admin_role) from public, anon;
+revoke all on function public.revoke_admin(uuid) from public, anon;
+grant execute on function public.list_admin_users() to authenticated;
+grant execute on function public.grant_admin(text, admin_role) to authenticated;
+grant execute on function public.revoke_admin(uuid) to authenticated;
 
 -- Anti-spam : refuse plus de 3 demandes du même numéro en 10 minutes
 create or replace function public.check_lead_rate_limit()
