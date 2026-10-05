@@ -15,7 +15,7 @@ function PlanParcelle({couleur}) {
           <rect key={`b${i}`} x={10 + i * 58} y="92" width="50" height="56" rx="3" />
         ))}
       </g>
-      <rect x="126" y="12" width="50" height="56" rx="3" fill="#fcd116" opacity="0.9" />
+      <rect x="126" y="12" width="50" height="56" rx="3" fill="#ffffff" opacity="0.85" />
     </svg>
   );
 }

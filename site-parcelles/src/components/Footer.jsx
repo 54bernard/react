@@ -6,8 +6,7 @@ export default function Footer() {
       <div className="container footer__inner">
         <div>
           <a href="#accueil" className="logo logo--clair">
-            <span className="logo__icone" aria-hidden="true">★</span>
-            {entreprise.nom}
+            <img src="logo.jpg" alt={entreprise.nom} className="logo__img" />
           </a>
           <p>{entreprise.slogan}.</p>
         </div>

@@ -1,12 +1,12 @@
-# Faso Parcelles — site vitrine
+# Progrès Habitat — site vitrine
 
-Site vitrine (React + Vite) pour une entreprise de vente de parcelles au Burkina Faso.
+Site vitrine (React + Vite) de **Progrès Habitat** (BTP, génie civil et vente de parcelles), basée à Dassasgho, Ouagadougou — Burkina Faso.
 
 ## Sections
 
 - **Accueil** : accroche, boutons d'action et chiffres clés
 - **À propos** : présentation et valeurs de l'entreprise
-- **Parcelles** : catalogue filtrable par ville et par budget (prix en FCFA, superficie, type de document : ACD, attestation d'attribution, titre foncier)
+- **Parcelles** : catalogue filtrable par ville (Ouagadougou, Tenkodogo) et par budget (prix en FCFA, superficie, type de document : ACD, attestation d'attribution, titre foncier)
 - **Services** : vente, accompagnement administratif, bornage, construction, paiement échelonné, service Diaspora
 - **Comment acheter** : les 4 étapes de l'achat
 - **FAQ**
@@ -15,7 +15,7 @@ Site vitrine (React + Vite) pour une entreprise de vente de parcelles au Burkina
 
 ## Personnaliser
 
-Toutes les informations (nom de l'entreprise, téléphone, WhatsApp, e-mail, adresse, parcelles, prix, services, FAQ) se trouvent dans **`src/data.js`**. Les valeurs actuelles sont des exemples à remplacer.
+Toutes les informations (nom de l'entreprise, téléphone, WhatsApp, adresse, parcelles, prix, services, FAQ) se trouvent dans **`src/data.js`**. Les coordonnées sont réelles ; **les parcelles et les prix sont des exemples à remplacer**. Le logo est dans `public/logo.jpg`.
 
 ## Lancer le site
 

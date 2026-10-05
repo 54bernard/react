@@ -1,12 +1,11 @@
-/* Palette inspirée du drapeau burkinabè et de la latérite */
+/* Palette reprise du logo Progrès Habitat : vert-bleu, orange et ardoise */
 :root {
-  --rouge: #ef2b2d;
-  --rouge-fonce: #c81e20;
-  --vert: #009e49;
-  --vert-fonce: #0b5d34;
-  --jaune: #fcd116;
-  --terre: #b45309;
-  --sable: #fff8ec;
+  --rouge: #e5730a; /* orange (boutons d'action) */
+  --rouge-fonce: #c45f05;
+  --vert: #1e846f; /* vert-bleu */
+  --vert-fonce: #263c45; /* ardoise */
+  --jaune: #ff9a3c; /* orange clair (accents sur fond sombre) */
+  --sable: #f6f8f7;
   --texte: #1f2937;
   --texte-doux: #4b5563;
   --bordure: #eadfcf;
@@ -151,15 +150,12 @@ svg {
   color: var(--vert-fonce);
 }
 
-.logo__icone {
-  display: grid;
-  place-items: center;
-  width: 36px;
-  height: 36px;
+.logo__img {
+  height: 46px;
+  width: auto;
+  padding: 4px 10px;
   border-radius: 10px;
-  background: linear-gradient(180deg, var(--rouge) 50%, var(--vert) 50%);
-  color: var(--jaune);
-  font-size: 1.1rem;
+  background: #fff;
 }
 
 .nav {
@@ -252,8 +248,8 @@ svg {
   color: var(--blanc);
   padding: 150px 0 70px;
   background:
-    radial-gradient(circle at 85% 20%, rgba(252, 209, 22, 0.25), transparent 40%),
-    linear-gradient(135deg, var(--vert-fonce) 0%, #14532d 45%, #7c2d12 100%);
+    radial-gradient(circle at 85% 20%, rgba(246, 127, 9, 0.3), transparent 42%),
+    linear-gradient(135deg, #1e846f 0%, #22606a 45%, #263c45 100%);
 }
 
 .hero__fond {
@@ -327,7 +323,7 @@ svg {
 .chiffres strong {
   display: block;
   font-family: var(--titres);
-  font-size: 1.9rem;
+  font-size: 1.45rem;
   color: var(--jaune);
 }
 
@@ -422,7 +418,7 @@ svg {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: #dcfce7;
+  background: #d9efe9;
   color: var(--vert);
   font-weight: 700;
 }
@@ -599,8 +595,8 @@ textarea:focus {
 .carte__atouts li {
   padding: 3px 10px;
   border-radius: 999px;
-  background: #ecfdf5;
-  color: var(--vert-fonce);
+  background: #e3f2ee;
+  color: var(--vert);
   font-size: 0.8rem;
 }
 
@@ -666,7 +662,7 @@ textarea:focus {
   height: 56px;
   margin-bottom: 18px;
   border-radius: 14px;
-  background: #fef3c7;
+  background: #fdebd8;
   font-size: 1.6rem;
 }
 
@@ -858,7 +854,7 @@ textarea:focus {
 
 /* ---------- Pied de page ---------- */
 .footer {
-  background: #111827;
+  background: #1d2f36;
   color: rgba(255, 255, 255, 0.75);
 }
 
@@ -868,6 +864,10 @@ textarea:focus {
   justify-content: space-between;
   gap: 24px;
   padding: 50px 0 30px;
+}
+
+.footer .logo__img {
+  height: 54px;
 }
 
 .footer p {
@@ -903,11 +903,11 @@ textarea:focus {
 
 .drapeau span {
   flex: 1;
-  background: var(--rouge);
+  background: var(--vert);
 }
 
 .drapeau span + span {
-  background: var(--vert);
+  background: var(--rouge);
 }
 
 /* ---------- Bouton WhatsApp flottant ---------- */

@@ -1,4 +1,4 @@
-import {entreprise, chiffres} from '../data.js';
+import {entreprise, atoutsCles} from '../data.js';
 
 export default function Hero() {
   return (
@@ -13,7 +13,7 @@ export default function Hero() {
       </div>
       <div className="container hero__inner">
         <div className="hero__texte">
-          <span className="badge">🇧🇫 Agence foncière au Burkina Faso</span>
+          <span className="badge">🇧🇫 {entreprise.activite}</span>
           <h1>
             {entreprise.slogan}.
             <br />
@@ -21,9 +21,9 @@ export default function Hero() {
             sécurité.
           </h1>
           <p>
-            Terrains lotis et viabilisés à Ouagadougou, Bobo-Dioulasso et
-            Koudougou. Documents officiels, bornage et paiement échelonné
-            adapté à votre budget.
+            Terrains lotis à {entreprise.zones}. Documents officiels, bornage,
+            paiement échelonné et construction de votre maison par nos
+            équipes BTP.
           </p>
           <div className="hero__actions">
             <a href="#parcelles" className="btn btn--primaire">
@@ -36,7 +36,7 @@ export default function Hero() {
         </div>
 
         <ul className="chiffres">
-          {chiffres.map(c => (
+          {atoutsCles.map(c => (
             <li key={c.libelle}>
               <strong>{c.valeur}</strong>
               <span>{c.libelle}</span>

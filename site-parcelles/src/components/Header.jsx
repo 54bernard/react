@@ -24,8 +24,7 @@ export default function Header() {
     <header className={`header ${scrolle ? 'header--scrolle' : ''}`}>
       <div className="container header__inner">
         <a href="#accueil" className="logo" onClick={() => setOuvert(false)}>
-          <span className="logo__icone" aria-hidden="true">★</span>
-          {entreprise.nom}
+          <img src="logo.jpg" alt={entreprise.nom} className="logo__img" />
         </a>
 
         <button

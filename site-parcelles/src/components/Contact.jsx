@@ -39,16 +39,20 @@ export default function Contact() {
               </a>
             </li>
             <li>
-              <span aria-hidden="true">✉️</span>
-              <a href={`mailto:${entreprise.email}`}>{entreprise.email}</a>
+              <span aria-hidden="true">💬</span>
+              <a href={lienWhatsApp(`Bonjour ${entreprise.nom} !`)} target="_blank" rel="noreferrer">
+                WhatsApp
+              </a>
             </li>
             <li>
               <span aria-hidden="true">📍</span>
               {entreprise.adresse}
             </li>
             <li>
-              <span aria-hidden="true">🕒</span>
-              {entreprise.horaires}
+              <span aria-hidden="true">👍</span>
+              <a href={entreprise.facebook} target="_blank" rel="noreferrer">
+                Page Facebook
+              </a>
             </li>
           </ul>
         </div>

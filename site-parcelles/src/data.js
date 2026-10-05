@@ -1,25 +1,25 @@
 // Toutes les informations modifiables du site sont regroupées ici.
-// Remplacez les valeurs ci-dessous par celles de votre entreprise.
+// Les parcelles listées plus bas sont des exemples à remplacer par les offres réelles.
 
 export const entreprise = {
-  nom: 'Faso Parcelles',
-  slogan: 'Votre terrain, votre avenir',
-  telephone: '+226 70 00 00 00',
-  whatsapp: '22670000000', // numéro au format international, sans "+" ni espaces
-  email: 'contact@fasoparcelles.bf',
-  adresse: 'Avenue Kwame Nkrumah, Ouagadougou, Burkina Faso',
-  horaires: 'Lun – Ven : 8h – 17h30 · Sam : 9h – 13h',
+  nom: 'Progrès Habitat',
+  slogan: 'Bâtissons votre avenir ensemble',
+  activite: 'BTP · Génie civil · Vente de parcelles',
+  telephone: '+226 67 98 57 54',
+  whatsapp: '22667985754', // numéro au format international, sans "+" ni espaces
+  adresse: 'Dassasgho, Ouagadougou, Burkina Faso',
+  zones: 'Ouagadougou et Tenkodogo',
   facebook: 'https://www.facebook.com/share/19aSfUwzeb/',
 };
 
-export const chiffres = [
-  {valeur: '1 200+', libelle: 'Parcelles vendues'},
-  {valeur: '15', libelle: 'Sites aménagés'},
-  {valeur: '10 ans', libelle: "D'expérience"},
-  {valeur: '100 %', libelle: 'Documents officiels'},
+export const atoutsCles = [
+  {valeur: 'Ouaga & Tenkodogo', libelle: 'Nos zones d’intervention'},
+  {valeur: 'BTP', libelle: 'Génie civil & construction'},
+  {valeur: 'Officiels', libelle: 'Documents remis à l’achat'},
+  {valeur: 'Échelonné', libelle: 'Paiement adapté à votre budget'},
 ];
 
-export const villes = ['Toutes', 'Ouagadougou', 'Bobo-Dioulasso', 'Koudougou'];
+export const villes = ['Toutes', 'Ouagadougou', 'Tenkodogo'];
 
 export const parcelles = [
   {
@@ -32,7 +32,7 @@ export const parcelles = [
     document: 'ACD',
     statut: 'Disponible',
     atouts: ['Bitume à 200 m', 'Eau ONEA', 'Électricité SONABEL'],
-    couleur: '#c2410c',
+    couleur: '#1e846f',
   },
   {
     id: 2,
@@ -44,7 +44,7 @@ export const parcelles = [
     document: "Attestation d'attribution",
     statut: 'Disponible',
     atouts: ['Zone lotie', 'Proche école', 'Paiement échelonné'],
-    couleur: '#15803d',
+    couleur: '#334e59',
   },
   {
     id: 3,
@@ -56,43 +56,43 @@ export const parcelles = [
     document: 'ACD',
     statut: 'Dernières parcelles',
     atouts: ['Parcelle d’angle', 'Voies tracées', 'Calme'],
-    couleur: '#b45309',
+    couleur: '#d96f08',
   },
   {
     id: 4,
-    nom: 'Cité Kénédougou',
-    ville: 'Bobo-Dioulasso',
-    quartier: 'Secteur 33',
+    nom: 'Cité du Boulgou',
+    ville: 'Tenkodogo',
+    quartier: 'Secteur 5',
     superficie: 300,
     prix: 3800000,
     document: 'ACD',
     statut: 'Disponible',
     atouts: ['Proche marché', 'Électricité', 'Voies latéritées'],
-    couleur: '#0f766e',
+    couleur: '#176b5a',
   },
   {
     id: 5,
-    nom: 'Domaine du Houet',
-    ville: 'Bobo-Dioulasso',
-    quartier: 'Lafiabougou',
+    nom: 'Domaine Zoungrana',
+    ville: 'Tenkodogo',
+    quartier: 'Secteur 3',
     superficie: 500,
     prix: 6500000,
     document: 'Titre foncier',
     statut: 'Disponible',
     atouts: ['Idéal villa', 'Quartier résidentiel', 'Bitume'],
-    couleur: '#9a3412',
+    couleur: '#f67f09',
   },
   {
     id: 6,
-    nom: 'Cité du Boulkiemdé',
-    ville: 'Koudougou',
-    quartier: 'Secteur 9',
+    nom: 'Résidence Dassasgho',
+    ville: 'Ouagadougou',
+    quartier: 'Dassasgho',
     superficie: 300,
     prix: 2500000,
     document: "Attestation d'attribution",
     statut: 'Disponible',
-    atouts: ['Prix accessible', 'Proche université', 'Paiement échelonné'],
-    couleur: '#166534',
+    atouts: ['Prix accessible', 'Proche des commodités', 'Paiement échelonné'],
+    couleur: '#2b5f6b',
   },
 ];
 
@@ -101,7 +101,7 @@ export const services = [
     icone: '🗺️',
     titre: 'Vente de parcelles',
     texte:
-      'Des terrains lotis et viabilisés dans les zones en pleine expansion de Ouagadougou, Bobo-Dioulasso et Koudougou.',
+      'Des terrains lotis et viabilisés dans les zones en pleine expansion de Ouagadougou et Tenkodogo.',
   },
   {
     icone: '📄',
@@ -117,9 +117,9 @@ export const services = [
   },
   {
     icone: '🏠',
-    titre: 'Construction clé en main',
+    titre: 'BTP & construction',
     texte:
-      'Après l’achat, nos partenaires construisent votre maison selon vos plans et votre budget.',
+      'Entreprise de génie civil, nous construisons votre maison clé en main selon vos plans et votre budget.',
   },
   {
     icone: '💳',

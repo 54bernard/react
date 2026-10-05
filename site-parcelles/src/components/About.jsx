@@ -12,10 +12,10 @@ export default function About() {
       <div className="container apropos">
         <div className="apropos__visuel" aria-hidden="true">
           <svg viewBox="0 0 400 320" role="img">
-            <rect width="400" height="320" rx="24" fill="#fde68a" />
-            <circle cx="320" cy="70" r="36" fill="#f59e0b" />
-            <path d="M0 220 Q100 170 200 210 T400 200 V320 H0Z" fill="#d97706" />
-            <path d="M0 250 Q120 215 220 245 T400 240 V320 H0Z" fill="#b45309" />
+            <rect width="400" height="320" rx="24" fill="#fde9cf" />
+            <circle cx="320" cy="70" r="36" fill="#f67f09" />
+            <path d="M0 220 Q100 170 200 210 T400 200 V320 H0Z" fill="#2b9a82" />
+            <path d="M0 250 Q120 215 220 245 T400 240 V320 H0Z" fill="#1e846f" />
             {/* Plan de lotissement */}
             {[0, 1, 2].map(r =>
               [0, 1, 2, 3].map(c => (
@@ -26,8 +26,8 @@ export default function About() {
                   width="62"
                   height="34"
                   rx="4"
-                  fill={r === 1 && c === 2 ? '#ef2b2d' : '#fffbeb'}
-                  stroke="#92400e"
+                  fill={r === 1 && c === 2 ? '#1e846f' : '#ffffff'}
+                  stroke="#334e59"
                   strokeWidth="2"
                 />
               )),
@@ -41,11 +41,12 @@ export default function About() {
           <span className="surtitre">À propos de nous</span>
           <h2>Un partenaire de confiance pour devenir propriétaire</h2>
           <p>
-            Depuis plus de 10 ans, <strong>{entreprise.nom}</strong> aide les
-            familles burkinabè et la diaspora à acquérir un terrain en toute
-            sérénité. Nous aménageons des sites lotis, accompagnons nos clients
-            dans leurs démarches administratives et garantissons la remise de
-            documents officiels.
+            Basée à Dassasgho (Ouagadougou), <strong>{entreprise.nom}</strong>{' '}
+            est une entreprise de BTP et génie civil qui aide les familles
+            burkinabè et la diaspora à devenir propriétaires à{' '}
+            {entreprise.zones}. Nous proposons des parcelles loties, vous
+            accompagnons dans les démarches administratives et pouvons
+            construire votre maison.
           </p>
           <ul className="valeurs">
             {valeurs.map(v => (
