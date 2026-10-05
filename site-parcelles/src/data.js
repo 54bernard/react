@@ -9,7 +9,7 @@ export const entreprise = {
   email: 'contact@fasoparcelles.bf',
   adresse: 'Avenue Kwame Nkrumah, Ouagadougou, Burkina Faso',
   horaires: 'Lun – Ven : 8h – 17h30 · Sam : 9h – 13h',
-  facebook: 'https://facebook.com/',
+  facebook: 'https://www.facebook.com/share/19aSfUwzeb/',
 };
 
 export const chiffres = [
