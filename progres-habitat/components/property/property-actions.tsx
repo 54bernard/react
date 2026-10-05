@@ -41,7 +41,7 @@ export function VisitSheet({
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>{trigger}</SheetTrigger>
       <SheetContent title="Demander une visite" description={`${property.title} — réf. ${property.reference}`}>
-        <div className="p-5">
+        <div className="p-6">
           <VisitForm
             properties={[{ id: property.id, label: `${property.reference} — ${property.title}` }]}
             defaultPropertyId={property.id}

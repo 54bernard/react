@@ -26,12 +26,12 @@ export default async function FaqPage() {
         title="Questions fréquentes"
         description="Tout ce qu’il faut savoir avant d’acheter votre terrain."
       />
-      <section className="container-page max-w-4xl py-14 lg:py-20">
+      <section className="container-page max-w-4xl py-14 lg:py-24">
         <FaqList items={faq} />
-        <div className="mt-12 rounded-3xl bg-sand-100 p-8 text-center">
-          <h2 className="font-display text-2xl font-medium">Vous n’avez pas trouvé votre réponse ?</h2>
-          <p className="mt-2 text-ink-500">Un conseiller vous répond rapidement par téléphone ou WhatsApp.</p>
-          <Button asChild className="mt-6">
+        <div className="mt-16 rounded-3xl bg-sand-100 px-6 py-12 text-center sm:px-12">
+          <h2 className="text-h3">Vous n’avez pas trouvé votre réponse ?</h2>
+          <p className="mt-3 text-ink-500">Un conseiller vous répond rapidement par téléphone ou WhatsApp.</p>
+          <Button asChild className="mt-8">
             <Link href="/contact">Poser ma question</Link>
           </Button>
         </div>

@@ -145,10 +145,5 @@ export async function syncFavorite(deviceId: string, propertyId: string, active:
   if (!/^[a-z0-9-]{8,64}$/i.test(deviceId) || !UUID_RE.test(propertyId)) return;
   const { allowed } = rateLimit(await clientKey('favoris'), 60, 60 * 1000);
   if (!allowed) return;
-  const supabase = createSupabasePublicClient();
-  if (active) {
-    await supabase.from('favorites').upsert({ device_id: deviceId, property_id: propertyId }, { onConflict: 'device_id,property_id', ignoreDuplicates: true });
-  } else {
-    await supabase.from('favorites').delete().eq('device_id', deviceId).eq('property_id', propertyId);
-  }
+  await createSupabasePublicClient().rpc('set_favorite', { p_device_id: deviceId, p_property_id: propertyId, p_active: active });
 }

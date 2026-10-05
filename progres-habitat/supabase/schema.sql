@@ -321,6 +321,31 @@ $$;
 
 grant execute on function public.increment_property_view(text) to anon, authenticated;
 
+-- Favoris anonymes : écriture uniquement via cette fonction (aucune policy
+-- d'écriture publique sur la table, donc pas de suppression en masse possible).
+create or replace function public.set_favorite(p_device_id text, p_property_id uuid, p_active boolean)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if p_device_id !~ '^[A-Za-z0-9-]{8,64}$' then
+    raise exception 'device_id invalide';
+  end if;
+  if p_active then
+    insert into public.favorites (device_id, property_id)
+    select p_device_id, p.id from public.properties p where p.id = p_property_id and p.is_published
+    on conflict (device_id, property_id) do nothing;
+  else
+    delete from public.favorites where device_id = p_device_id and property_id = p_property_id;
+  end if;
+end;
+$$;
+
+revoke execute on function public.set_favorite(text, uuid, boolean) from public;
+grant execute on function public.set_favorite(text, uuid, boolean) to anon, authenticated;
+
 -- ---------------------------------------------------------------------
 -- Gestion des administrateurs (réservée aux administrateurs « admin »)
 -- Les comptes sont créés dans Supabase > Authentication ; ces fonctions
@@ -471,8 +496,7 @@ create policy "appointments_public_insert" on public.appointments for insert
 create policy "appointments_admin_all" on public.appointments for all using (public.is_admin()) with check (public.is_admin());
 
 -- Favoris : insertion/suppression anonymes par identifiant d'appareil, lecture admin
-create policy "favorites_public_insert" on public.favorites for insert with check (true);
-create policy "favorites_public_delete" on public.favorites for delete using (true);
+-- Écriture publique : uniquement via public.set_favorite()
 create policy "favorites_admin_read" on public.favorites for select using (public.is_admin());
 
 -- ---------------------------------------------------------------------

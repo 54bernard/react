@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import { PropertyForm } from '@/components/admin/property-form';
 import { AdminPageHeader } from '@/components/admin/ui';
 import { requireAdminPage } from '@/lib/auth';
@@ -16,7 +17,7 @@ export default async function NewPropertyPage() {
         description="Enregistrez d’abord en brouillon, prévisualisez, puis publiez."
         back={{ href: '/admin/terrains', label: 'Terrains' }}
       />
-      <PropertyForm locations={locations} isDemo={isDemo} siteUrl={publicEnv.siteUrl} />
+      <PropertyForm locations={locations} isDemo={isDemo} siteUrl={publicEnv.siteUrl} newId={randomUUID()} />
     </>
   );
 }

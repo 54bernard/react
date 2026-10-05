@@ -35,9 +35,12 @@ export function formatDistance(meters: number): string {
   return `${meters} m`;
 }
 
+export const APP_TIME_ZONE = 'Africa/Ouagadougou';
+
 export function formatDate(value: string | Date, options?: Intl.DateTimeFormatOptions): string {
   const date = typeof value === 'string' ? new Date(value) : value;
-  return date.toLocaleDateString('fr-FR', options ?? { day: 'numeric', month: 'long', year: 'numeric' });
+  // Fuseau fixe : rendu identique serveur / navigateur (pas d'erreur d'hydratation) et heure locale de l'agence.
+  return date.toLocaleDateString('fr-FR', { timeZone: APP_TIME_ZONE, ...(options ?? { day: 'numeric', month: 'long', year: 'numeric' }) });
 }
 
 export function slugify(input: string): string {

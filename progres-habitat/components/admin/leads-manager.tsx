@@ -15,7 +15,7 @@ import { Field, Input, Select, Textarea } from '@/components/ui/form-controls';
 import { EmptyState } from '@/components/ui/misc';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { leadSourceLabels, leadStatusLabels } from '@/lib/labels';
-import { cn, formatDate } from '@/lib/utils';
+import { APP_TIME_ZONE, cn, formatDate } from '@/lib/utils';
 import { phoneHref, whatsappLink } from '@/lib/whatsapp';
 import { leadCreateSchema, type LeadCreateValues } from '@/schemas/property';
 import { LEAD_SOURCES, LEAD_STATUSES, type LeadStatus, type LeadWithProperty } from '@/types';
@@ -87,7 +87,7 @@ function LeadEditor({ lead, onDone }: { lead: LeadWithProperty; onDone: () => vo
         </div>
         <div className="col-span-2">
           <dt className="text-ink-500">Reçue le</dt>
-          <dd className="font-medium">{new Date(lead.created_at).toLocaleString('fr-FR', { dateStyle: 'full', timeStyle: 'short' })}</dd>
+          <dd className="font-medium">{new Date(lead.created_at).toLocaleString('fr-FR', { dateStyle: 'full', timeStyle: 'short', timeZone: APP_TIME_ZONE })}</dd>
         </div>
         {lead.message && (
           <div className="col-span-2">

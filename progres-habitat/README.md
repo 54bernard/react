@@ -82,6 +82,8 @@ npm run typecheck  # TypeScript (tsc --noEmit)
      insert into public.admins (user_id, role)
      select id, 'admin' from auth.users where email = 'votre-email@exemple.com';
      ```
+   - Les accès suivants se gèrent ensuite depuis **Admin → Utilisateurs** (rôles *admin* ou *éditeur*) : créez le compte
+     dans *Authentication → Users*, puis donnez-lui l’accès par son e-mail.
 5. **Désactiver les inscriptions publiques** : *Authentication* → *Providers* → *Email* → désactivez *Allow new users to sign up*
    (seuls les comptes que vous créez peuvent se connecter).
 6. **Récupérer les clés** : *Project Settings* → *API* → copiez `Project URL` et la clé `anon public` dans `.env.local` :
@@ -123,6 +125,7 @@ Les pages publiques sont régénérées automatiquement (ISR, 5 minutes) et imm�
 | `NEXT_PUBLIC_GA_ID` | non | Google Analytics 4 (`G-XXXXXXX`) |
 | `NEXT_PUBLIC_META_PIXEL_ID` | non | Meta Pixel |
 | `RESEND_API_KEY`, `EMAIL_FROM`, `EMAIL_TO` | non | Notification e-mail à chaque nouvelle demande (serveur uniquement) |
+| `ALLOW_DEMO_ADMIN` | non | `true` autorise l’admin de démonstration en production (préproduction uniquement). Par défaut, sans Supabase, `/admin` est inaccessible en production. |
 
 ---
 
@@ -137,7 +140,8 @@ app/
     mentions-legales/ confidentialite/ conditions-generales/
   admin/
     connexion/            authentification Supabase
-    (espace)/             back-office protégé : tableau de bord, terrains, demandes, rendez-vous, témoignages, paramètres
+    (espace)/             back-office protégé : tableau de bord, terrains, clients, visites, localisations,
+                          témoignages, FAQ, utilisateurs, paramètres (chaque section a son squelette de chargement)
     actions.ts            Server Actions d’administration (vérification admin + validation Zod)
   actions/                Server Actions publiques (formulaires, favoris, vues)
   sitemap.ts robots.ts manifest.ts not-found.tsx error.tsx global-error.tsx
@@ -180,15 +184,22 @@ dans `services/` ; validation dans `schemas/` partagée entre client et serveur.
 - États gérés : chargement (squelettes), aucun résultat, erreur, terrain vendu/réservé, photo absente, connexion perdue,
   formulaire envoyé, erreurs de validation, 404 et 500.
 
-**Administration**
-- Tableau de bord : terrains disponibles/réservés/vendus, brouillons, demandes, visites, vues des annonces, relances dues,
-  dernières demandes, prochaines visites, annonces les plus consultées, origine des demandes.
-- Terrains : ajout, modification, suppression, duplication, changement de statut en un clic, publication/brouillon,
-  mise à la une, **photos multiples par glisser-déposer** (vérification du format et de la taille, ordre, image principale,
-  texte alternatif), documents, équipements, lieux à proximité, latitude/longitude avec carte, **aperçu avant publication**.
-- CRM : nom, numéro, terrain demandé, source, date, statut, notes, date de relance, ajout manuel, export CSV, contact
-  direct par appel ou WhatsApp.
-- Rendez-vous, témoignages (publication contrôlée), paramètres de l’entreprise et chiffres clés.
+**Administration** (`/admin`, menu : Tableau de bord, Terrains, Clients, Demandes de visite, Localisations,
+Témoignages, FAQ, Utilisateurs, Paramètres)
+- Tableau de bord : total, disponibles, réservés, vendus, leads de la semaine, demandes de visite, statistiques mensuelles
+  (demandes et visites sur 6 mois), annonces les plus consultées, dernières demandes, prochaines visites.
+- Terrains : liste avec recherche, onglets (statut, brouillons, archives), filtre par zone, tri et pagination ; formulaire
+  en sections (informations générales, prix, surface, localisation, GPS, description, caractéristiques, photos, documents,
+  SEO, statut) ; **photos par glisser-déposer**, réordonnables, image principale, texte alternatif ; **brouillon,
+  publication, archivage, duplication**, aperçu de l’annonce, confirmation avant suppression.
+- Clients (CRM) : recherche, filtres, pagination, statut, notes, relance, ajout manuel, export CSV, appel/WhatsApp direct.
+- Demandes de visite : à venir / passées, statut, recherche, pagination.
+- Localisations (zones), témoignages, FAQ, utilisateurs (rôles admin/éditeur), paramètres de l’entreprise.
+- Notifications (toasts), squelettes de chargement, confirmations des actions destructives.
+
+**Publication d’un terrain** : *brouillon* (invisible) → *publié* (visible, dans le sitemap) → *archivé* (retiré du site,
+conservé dans l’admin). Les champs *Titre SEO* et *Description SEO* remplacent, s’ils sont remplis, le titre et la
+description générés automatiquement.
 
 ---
 
@@ -211,7 +222,13 @@ dans `services/` ; validation dans `schemas/` partagée entre client et serveur.
 
 - **Row Level Security** sur toutes les tables : le public ne peut que lire les contenus publiés et *créer* des demandes ;
   seules les personnes listées dans `admins` peuvent modifier les données ou téléverser des fichiers.
-- Vérification administrateur côté serveur dans chaque page et chaque Server Action (en plus du middleware).
+- Toutes les routes `/admin` (sauf la page de connexion) sont protégées par le middleware **et** vérifiées côté serveur
+  dans chaque page, route et Server Action. Sans Supabase, l’admin de démonstration est refusée en production
+  (sauf `ALLOW_DEMO_ADMIN=true`). Les pages admin sont exclues de l’indexation (`X-Robots-Tag: noindex`).
+- Gestion des accès via des fonctions SQL `security definer` (`list_admin_users`, `grant_admin`, `revoke_admin`)
+  réservées aux administrateurs ; un administrateur ne peut pas retirer son propre accès.
+- Favoris anonymes écrits uniquement via la fonction `set_favorite` (aucune écriture directe du public sur la table).
+- Export CSV protégé contre l’injection de formules.
 - Validation Zod côté serveur, nettoyage des saisies (balises et caractères de contrôle supprimés).
 - Anti-spam : champ piège invisible, délai minimum de remplissage, limitation de débit par IP, et déclencheur SQL
   limitant à 3 demandes par numéro toutes les 10 minutes.

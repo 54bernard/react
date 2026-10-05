@@ -12,15 +12,13 @@ export default function ErrorPage({ error, reset }: { error: Error & { digest?: 
 
   return (
     <main id="contenu" className="flex min-h-dvh flex-col items-center justify-center bg-sand-50 px-6 text-center">
-      <span className="grid size-16 place-items-center rounded-2xl bg-red-50 text-red-600">
-        <ServerCrash className="size-8" aria-hidden="true" />
-      </span>
-      <h1 className="mt-6 font-display text-3xl font-medium sm:text-4xl">Un problème est survenu</h1>
-      <p className="mt-3 max-w-md text-ink-500">
+      <ServerCrash className="size-7 text-red-600" strokeWidth={1.5} aria-hidden="true" />
+      <h1 className="text-h1 mt-8 max-w-2xl">Un problème est survenu</h1>
+      <p className="mt-5 max-w-md text-lead text-ink-500">
         Nous n’avons pas pu charger cette page. Vérifiez votre connexion puis réessayez.
         {error.digest && <span className="mt-2 block text-xs text-ink-400">Code : {error.digest}</span>}
       </p>
-      <div className="mt-8 flex flex-wrap justify-center gap-3">
+      <div className="mt-10 flex flex-wrap justify-center gap-3">
         <Button onClick={reset}>
           <RefreshCw /> Réessayer
         </Button>

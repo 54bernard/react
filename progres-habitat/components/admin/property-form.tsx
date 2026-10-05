@@ -31,6 +31,8 @@ interface Props {
   locations: Location[];
   isDemo: boolean;
   siteUrl: string;
+  /** Identifiant généré côté serveur pour un nouveau terrain (stable entre SSR et hydratation). */
+  newId?: string;
 }
 
 const SECTIONS = [
@@ -193,9 +195,9 @@ const PUBLICATION_OPTIONS = [
   { value: 'archive', label: 'Archivé', text: 'Retiré du site et des listes, conservé.', icon: Archive },
 ] as const;
 
-export function PropertyForm({ initial, locations, isDemo, siteUrl }: Props) {
+export function PropertyForm({ initial, locations, isDemo, siteUrl, newId }: Props) {
   const router = useRouter();
-  const [propertyId] = useState(() => initial?.id ?? crypto.randomUUID());
+  const propertyId = initial?.id ?? newId ?? '';
   const [saving, startSaving] = useTransition();
   const [activeSection, setActiveSection] = useState<string>('general');
   const isNew = !initial;

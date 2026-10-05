@@ -31,7 +31,7 @@ export function MonthlyChart({ data }: { data: MonthlyStat[] }) {
   const total = data.reduce((s, d) => ({ leads: s.leads + d.leads, visits: s.visits + d.visits }), { leads: 0, visits: 0 });
 
   return (
-    <figure>
+    <figure className="relative">
       <div className="mb-4 flex flex-wrap items-center gap-x-5 gap-y-2">
         {SERIES.map((s) => (
           <span key={s.key} className="inline-flex items-center gap-2 text-[13px] text-ink-600">
@@ -118,7 +118,8 @@ export function MonthlyChart({ data }: { data: MonthlyStat[] }) {
         )}
       </div>
 
-      <table className="sr-only">
+      <div className="sr-only">
+      <table>
         <caption>Clients et demandes de visite par mois</caption>
         <thead>
           <tr>
@@ -137,6 +138,7 @@ export function MonthlyChart({ data }: { data: MonthlyStat[] }) {
           ))}
         </tbody>
       </table>
+      </div>
     </figure>
   );
 }

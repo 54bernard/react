@@ -21,7 +21,7 @@ export default async function FavoritesPage() {
         title="Mes terrains favoris"
         description="Vos favoris sont enregistrés sur cet appareil."
       />
-      <section className="container-page py-14 lg:py-20">
+      <section className="container-page py-14 lg:py-24">
         <FavoritesList properties={all} />
       </section>
     </>

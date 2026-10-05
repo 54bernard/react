@@ -24,8 +24,8 @@ export function ResultsMap({ markers }: { markers: MapMarker[] }) {
               onFocus={() => setActive(m.id)}
               onBlur={() => setActive(null)}
               className={cn(
-                'flex gap-4 rounded-2xl border bg-white p-3 transition',
-                active === m.id ? 'border-brand-400 shadow-soft' : 'border-ink-100 hover:border-ink-200',
+                'flex gap-4 rounded-2xl bg-white p-3 transition-shadow duration-300',
+                active === m.id ? 'shadow-lift ring-1 ring-ink-950' : 'ring-1 ring-ink-950/[0.06] hover:shadow-soft',
               )}
             >
               <div className="relative size-24 shrink-0 overflow-hidden rounded-xl bg-sand-100">
@@ -33,17 +33,17 @@ export function ResultsMap({ markers }: { markers: MapMarker[] }) {
               </div>
               <div className="min-w-0 flex-1 py-0.5">
                 <StatusBadge status={m.status} />
-                <p className="mt-2 line-clamp-1 text-sm font-semibold text-ink-900">{m.title}</p>
+                <p className="mt-2 line-clamp-1 text-sm font-semibold text-ink-950">{m.title}</p>
                 <p className="mt-0.5 text-xs text-ink-500">
                   {m.district} · {formatSurface(m.surface)}
                 </p>
-                <p className="mt-1.5 font-semibold text-ink-900">{formatPrice(m.price)}</p>
+                <p className="mt-1.5 font-semibold text-ink-950 tabular-nums">{formatPrice(m.price)}</p>
               </div>
             </Link>
           </li>
         ))}
       </ul>
-      <div className="order-1 h-[60vh] overflow-hidden rounded-3xl border border-ink-100 lg:sticky lg:top-28 lg:order-2 lg:h-[calc(100dvh-14rem)]">
+      <div className="order-1 h-[60vh] overflow-hidden rounded-3xl bg-sand-100 lg:sticky lg:top-[calc(var(--header-offset)+1.5rem)] lg:order-2 lg:h-[calc(100dvh-14rem)]">
         <MapView markers={markers} activeId={active} onActiveChange={setActive} />
       </div>
     </div>

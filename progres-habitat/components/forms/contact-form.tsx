@@ -44,11 +44,11 @@ export function ContactForm({ properties }: { properties: { id: string; label: s
 
   if (success) {
     return (
-      <div role="status" className="flex flex-col items-center rounded-3xl border border-ink-100 bg-white px-6 py-14 text-center">
+      <div role="status" className="flex flex-col items-center py-10 text-center">
         <span className="grid size-14 place-items-center rounded-full bg-emerald-50 text-emerald-600">
           <CheckCircle2 className="size-7" aria-hidden="true" />
         </span>
-        <h2 className="mt-5 text-xl font-semibold">Message envoyé</h2>
+        <h3 className="text-h3 mt-6">Message envoyé</h3>
         <p className="mt-2 max-w-md text-ink-500">{success}</p>
         <Button variant="outline" className="mt-6" onClick={() => setSuccess(null)}>
           Envoyer un autre message
@@ -60,7 +60,7 @@ export function ContactForm({ properties }: { properties: { id: string; label: s
   const err = (k: keyof ContactInput) => errors[k]?.message;
 
   return (
-    <form onSubmit={onSubmit} noValidate className="relative space-y-5 rounded-3xl border border-ink-100 bg-white p-6 shadow-soft sm:p-8">
+    <form onSubmit={onSubmit} noValidate className="relative space-y-5">
       {honeypot}
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Nom complet" htmlFor="c-name" error={err('name')}>
@@ -109,7 +109,7 @@ export function ContactForm({ properties }: { properties: { id: string; label: s
           <Checkbox className="mt-0.5" aria-invalid={!!errors.consent} aria-describedby="c-consent-error" {...register('consent')} />
           <span>
             J’accepte que mes données soient utilisées pour répondre à ma demande, conformément à la{' '}
-            <a href="/confidentialite" className="font-medium text-brand-700 underline-offset-4 hover:underline">
+            <a href="/confidentialite" className="font-medium text-ink-950 underline underline-offset-4">
               politique de confidentialité
             </a>
             .

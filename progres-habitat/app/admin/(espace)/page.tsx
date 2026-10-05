@@ -6,7 +6,7 @@ import { StatusBadge } from '@/components/property/status-badge';
 import { Button } from '@/components/ui/button';
 import { requireAdminPage } from '@/lib/auth';
 import { appointmentStatusLabels, leadSourceLabels, leadStatusLabels } from '@/lib/labels';
-import { formatDate, formatNumber } from '@/lib/utils';
+import { APP_TIME_ZONE, formatDate, formatNumber } from '@/lib/utils';
 import { getDashboardStats, listAppointments, listRecentLeads } from '@/services/admin';
 
 export const metadata = { title: 'Dashboard' };
@@ -20,7 +20,7 @@ export default async function DashboardPage() {
   ]);
   const upcoming = appointments.items.filter((a) => a.status !== 'annule').slice(0, 5);
   const maxSource = Math.max(1, ...stats.leadsBySource.map((s) => s.count));
-  const today = new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+  const today = new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', timeZone: APP_TIME_ZONE });
 
   return (
     <>

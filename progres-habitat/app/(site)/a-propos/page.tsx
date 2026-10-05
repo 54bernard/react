@@ -4,6 +4,7 @@ import { Compass, Eye, FileCheck2, HardHat, Scale, Target, Users } from 'lucide-
 import { CtaSection } from '@/components/home/sections';
 import { PageHeader } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
+import { SectionHeading } from '@/components/ui/misc';
 import { Reveal } from '@/components/ui/reveal';
 import { pageMetadata } from '@/lib/seo';
 import { getSettings } from '@/services/content';
@@ -33,13 +34,13 @@ export default async function AboutPage() {
         description="Une entreprise burkinabè de BTP et de génie civil qui accompagne les familles et la diaspora dans l’achat de leur terrain, puis dans la construction de leur maison."
       />
 
-      <section className="container-page grid gap-12 py-16 lg:grid-cols-2 lg:gap-20 lg:py-24" aria-labelledby="histoire">
-        <Reveal>
-          <p className="eyebrow mb-3">Notre histoire</p>
-          <h2 id="histoire" className="font-display text-3xl font-medium tracking-tight sm:text-4xl">
+      <section className="container-page section-y grid items-center gap-12 lg:grid-cols-12 lg:gap-16" aria-labelledby="histoire">
+        <Reveal className="lg:col-span-6">
+          <p className="eyebrow mb-5">Notre histoire</p>
+          <h2 id="histoire" className="text-h2 max-w-xl">
             Née d’un constat : acheter un terrain doit être simple et sûr
           </h2>
-          <div className="mt-6 space-y-4 text-[17px] leading-relaxed text-ink-600">
+          <div className="mt-8 max-w-xl space-y-5 text-[17px] leading-[1.7] text-ink-600">
             <p>
               Au Burkina Faso, acheter une parcelle est souvent l’investissement d’une vie. Pourtant, beaucoup d’acheteurs
               se heurtent à des documents incomplets, des doubles ventes ou des démarches interminables.
@@ -51,27 +52,27 @@ export default async function AboutPage() {
             </p>
           </div>
         </Reveal>
-        <Reveal delay={0.1}>
-          <div className="relative aspect-[4/3] overflow-hidden rounded-3xl">
+        <Reveal delay={0.1} className="lg:col-span-6">
+          <div className="relative aspect-[4/5] overflow-hidden rounded-3xl bg-sand-100 sm:aspect-[4/3] lg:aspect-[4/5]">
             <Image src="/images/apropos.webp" alt="Lotissement aménagé vu du ciel" fill sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
           </div>
         </Reveal>
       </section>
 
-      <section className="bg-white py-16 lg:py-24" aria-label="Mission et vision">
-        <div className="container-page grid gap-6 md:grid-cols-2">
-          <Reveal className="rounded-3xl bg-brand-800 p-8 text-white sm:p-10">
-            <Target className="size-8 text-brand-200" aria-hidden="true" />
-            <h2 className="mt-6 font-display text-2xl font-medium text-white sm:text-3xl">Notre mission</h2>
-            <p className="mt-4 text-lg leading-relaxed text-white/80">
+      <section className="bg-ink-950 text-white" aria-label="Mission et vision">
+        <div className="container-page section-y grid gap-14 md:grid-cols-2 md:gap-10 lg:gap-20">
+          <Reveal>
+            <Target className="size-6 text-brand-300" strokeWidth={1.6} aria-hidden="true" />
+            <h2 className="text-h3 mt-8 text-white">Notre mission</h2>
+            <p className="mt-5 max-w-md text-lead text-white/65">
               Rendre l’accès à la propriété foncière sûr et accessible, en proposant des terrains vérifiés, des prix
               transparents et des modalités de paiement adaptées aux réalités de chacun.
             </p>
           </Reveal>
-          <Reveal delay={0.1} className="rounded-3xl bg-sand-100 p-8 sm:p-10">
-            <Eye className="size-8 text-brand-700" aria-hidden="true" />
-            <h2 className="mt-6 font-display text-2xl font-medium sm:text-3xl">Notre vision</h2>
-            <p className="mt-4 text-lg leading-relaxed text-ink-600">
+          <Reveal delay={0.1} className="border-t border-white/10 pt-14 md:border-t-0 md:border-l md:pt-0 md:pl-10 lg:pl-20">
+            <Eye className="size-6 text-accent-400" strokeWidth={1.6} aria-hidden="true" />
+            <h2 className="text-h3 mt-8 text-white">Notre vision</h2>
+            <p className="mt-5 max-w-md text-lead text-white/65">
               Devenir l’acteur de référence du foncier et de la construction au Burkina Faso, en contribuant à des quartiers
               mieux planifiés, viabilisés et agréables à vivre.
             </p>
@@ -79,42 +80,39 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      <section className="container-page py-16 lg:py-24" aria-labelledby="valeurs">
-        <p className="eyebrow mb-3">Nos valeurs</p>
-        <h2 id="valeurs" className="font-display text-3xl font-medium tracking-tight sm:text-4xl">
-          Ce qui guide notre travail
-        </h2>
-        <ul className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <section className="container-page section-y" aria-labelledby="valeurs">
+        <SectionHeading id="valeurs" eyebrow="Nos valeurs" title="Ce qui guide notre travail" />
+        <ul className="mt-14 grid gap-x-10 gap-y-12 border-t border-ink-950/[0.08] pt-12 sm:grid-cols-2 lg:mt-20 lg:grid-cols-4">
           {values.map(({ icon: Icon, title, text }, i) => (
-            <Reveal as="li" key={title} delay={i * 0.06} className="rounded-3xl border border-ink-100 bg-white p-7">
-              <Icon className="size-7 text-brand-600" strokeWidth={1.7} aria-hidden="true" />
-              <h3 className="mt-5 text-lg font-semibold">{title}</h3>
-              <p className="mt-2 leading-relaxed text-ink-500">{text}</p>
+            <Reveal as="li" key={title} delay={i * 0.06}>
+              <Icon className="size-6 text-brand-700" strokeWidth={1.6} aria-hidden="true" />
+              <h3 className="mt-6 text-lg font-semibold tracking-tight text-ink-950">{title}</h3>
+              <p className="mt-3 leading-relaxed text-ink-500">{text}</p>
             </Reveal>
           ))}
         </ul>
       </section>
 
-      <section className="border-y border-ink-100 bg-white py-16 lg:py-24" aria-labelledby="equipe">
-        <div className="container-page grid gap-12 lg:grid-cols-2 lg:gap-20">
-          <div>
-            <p className="eyebrow mb-3">L’équipe</p>
-            <h2 id="equipe" className="font-display text-3xl font-medium tracking-tight sm:text-4xl">
+      <section className="border-t border-ink-950/[0.06] bg-white" aria-labelledby="equipe">
+        <div className="container-page section-y grid gap-12 lg:grid-cols-12 lg:gap-16">
+          <div className="lg:col-span-6">
+            <p className="eyebrow mb-5">L’équipe</p>
+            <h2 id="equipe" className="text-h2 max-w-xl">
               Des conseillers fonciers et des ingénieurs BTP
             </h2>
-            <p className="mt-5 text-[17px] leading-relaxed text-ink-600">
+            <p className="mt-8 max-w-xl text-[17px] leading-[1.7] text-ink-600">
               Notre équipe réunit des conseillers commerciaux, un service administratif dédié au suivi des dossiers
               fonciers et des techniciens du bâtiment et du génie civil. Chaque client est suivi par un conseiller unique,
               du premier contact à la remise des documents.
             </p>
-            <Button asChild className="mt-8">
+            <Button asChild className="mt-10">
               <Link href="/contact">Rencontrer un conseiller</Link>
             </Button>
           </div>
-          <div className="rounded-3xl bg-sand-100 p-8 sm:p-10">
-            <Compass className="size-8 text-brand-700" aria-hidden="true" />
-            <h3 className="mt-6 text-xl font-semibold">Documents administratifs et agréments</h3>
-            <p className="mt-3 leading-relaxed text-ink-600">
+          <div className="self-start rounded-3xl bg-sand-100 p-8 sm:p-10 lg:col-span-5 lg:col-start-8">
+            <Compass className="size-6 text-brand-700" strokeWidth={1.6} aria-hidden="true" />
+            <h3 className="text-h3 mt-8">Documents administratifs et agréments</h3>
+            <p className="mt-4 leading-relaxed text-ink-600">
               Nos documents d’entreprise (registre du commerce, identifiant fiscal, attestations) sont présentés sur
               simple demande et lors de chaque rendez-vous. Pour chaque terrain, les références du document foncier
               (attestation d’attribution, ACD ou titre foncier) vous sont communiquées afin que vous puissiez les vérifier
