@@ -389,6 +389,7 @@ textarea.input { height: auto; padding: 14px 16px; resize: vertical; }
 .form__note { font-size: 13px; color: var(--ph-text-muted); margin: 0; }
 .alert { padding: 14px 18px; border-radius: var(--ph-radius); font-weight: 500; font-size: 14px; }
 .alert--success { background: rgba(16, 185, 129, .12); color: #047857; border: 1px solid var(--ph-success); }
+.alert--error { background: rgba(239, 68, 68, .1); color: #B91C1C; border: 1px solid var(--ph-alert); }
 
 /* --- Footer ----------------------------------------------------------------- */
 .site-footer { background: var(--ph-anthracite); color: rgba(255, 255, 255, .8); padding: 72px 0 0; position: relative; }

@@ -165,9 +165,26 @@
     e.preventDefault();
     var f = e.target;
     if (!f.checkValidity()) { f.reportValidity(); return; }
-    // À brancher sur votre service d'envoi (e-mail, CRM, WhatsApp Business…)
-    document.getElementById('contact-ok').hidden = false;
-    f.reset();
+    var ok = document.getElementById('contact-ok');
+    var btn = f.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    // Envoi vers Netlify Forms (demandes visibles dans le tableau de bord Netlify)
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(new FormData(f)).toString()
+    }).then(function (res) {
+      if (!res.ok) throw new Error(res.status);
+      ok.className = 'alert alert--success';
+      ok.textContent = 'Merci ! Votre demande a bien été envoyée, un conseiller vous recontacte rapidement.';
+      f.reset();
+    }).catch(function () {
+      ok.className = 'alert alert--error';
+      ok.textContent = 'L’envoi a échoué. Réessayez ou contactez-nous directement sur WhatsApp.';
+    }).then(function () {
+      ok.hidden = false;
+      btn.disabled = false;
+    });
   });
 
   /* ---------------- Menu mobile ---------------- */
