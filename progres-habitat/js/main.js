@@ -62,33 +62,50 @@
   }
   function icon(id) { return '<svg aria-hidden="true"><use href="#' + id + '"/></svg>'; }
 
+  /* Sécurité : toute donnée d'un bien est considérée comme non fiable
+     (elle viendra de l'espace admin). On n'accepte que des valeurs connues,
+     des nombres et des URL https ; tout le reste est échappé. */
+  var TYPES = ['villa', 'maison', 'appartement', 'terrain', 'ferme', 'location'];
+  function num(n) { n = Number(n); return isFinite(n) && n >= 0 ? n : 0; }
+  function safeUrl(u) {
+    u = String(u || '');
+    return /^https:\/\//i.test(u) || /^\/?[\w\-./]+$/.test(u) ? u : '';
+  }
+
   function card(p) {
-    var badges = p.tags.map(function (t) {
+    var type = TYPES.indexOf(p.type) !== -1 ? p.type : '';
+    var status = STATUS_LABEL.hasOwnProperty(p.status) ? p.status : 'disponible';
+    var tags = (Array.isArray(p.tags) ? p.tags : []).filter(function (t) { return TAG_LABEL.hasOwnProperty(t); });
+    var ref = esc(p.ref);
+    var rooms = Math.floor(num(p.rooms));
+
+    var badges = tags.map(function (t) {
       return '<span class="badge badge--' + t + '">' + TAG_LABEL[t] + '</span>';
     });
-    badges.push('<span class="badge badge--' + p.status + '">' + STATUS_LABEL[p.status] + '</span>');
+    badges.push('<span class="badge badge--' + status + '">' + STATUS_LABEL[status] + '</span>');
 
-    var price = fcfa(p.price) + (p.period ? ' <small>' + p.period + '</small>' : '');
+    var price = fcfa(num(p.price)) + (p.period ? ' <small>' + esc(p.period) + '</small>' : '');
+    var photo = safeUrl(p.photo);
 
     return '' +
-      '<article class="property" data-type="' + p.type + (p.forRent ? ' location' : '') + '" data-city="' + esc(p.city) + '" data-price="' + p.price + '" data-search="' + esc((p.title + ' ' + p.ref + ' ' + p.city + ' ' + p.area).toLowerCase()) + '">' +
+      '<article class="property" data-type="' + type + (p.forRent ? ' location' : '') + '" data-city="' + esc(p.city) + '" data-price="' + num(p.price) + '" data-search="' + esc((p.title + ' ' + p.ref + ' ' + p.city + ' ' + p.area).toLowerCase()) + '">' +
         '<div class="property__media">' +
-          '<img src="' + p.photo + '" alt="' + esc(p.title) + '" loading="lazy" onerror="this.remove()">' +
+          (photo ? '<img src="' + esc(photo) + '" alt="' + esc(p.title) + '" loading="lazy">' : '') +
           '<div class="property__badges">' + badges.join('') + '</div>' +
-          '<button class="fav" type="button" aria-pressed="false" aria-label="Ajouter ' + esc(p.title) + ' aux favoris" data-ref="' + p.ref + '">' + icon('i-heart') + '</button>' +
+          '<button class="fav" type="button" aria-pressed="false" aria-label="Ajouter ' + esc(p.title) + ' aux favoris" data-ref="' + ref + '">' + icon('i-heart') + '</button>' +
         '</div>' +
         '<div class="property__body">' +
           '<h3 class="property__title">' + esc(p.title) + '</h3>' +
-          '<p class="property__ref">Réf : ' + p.ref + '</p>' +
+          '<p class="property__ref">Réf : ' + ref + '</p>' +
           '<ul class="property__meta">' +
             '<li>' + icon('i-pin') + esc(p.area) + ', ' + esc(p.city) + '</li>' +
-            '<li class="row"><span>' + icon('i-area') + surface(p.surface) + '</span>' +
-              (p.rooms ? '<span>' + icon('i-rooms') + p.rooms + ' pièces</span>' : '') +
+            '<li class="row"><span>' + icon('i-area') + surface(num(p.surface)) + '</span>' +
+              (rooms ? '<span>' + icon('i-rooms') + rooms + ' pièces</span>' : '') +
             '</li>' +
           '</ul>' +
           '<div class="property__foot">' +
             '<span class="property__price">' + price + '</span>' +
-            '<a class="btn btn--secondary btn--sm" href="#contact" data-ref="' + p.ref + '">Voir le bien ' + icon('i-arrow') + '</a>' +
+            '<a class="btn btn--secondary btn--sm" href="#contact" data-ref="' + ref + '">Voir le bien ' + icon('i-arrow') + '</a>' +
           '</div>' +
         '</div>' +
       '</article>';
@@ -97,6 +114,12 @@
   var list = document.getElementById('listings');
   var empty = document.getElementById('listings-empty');
   list.innerHTML = PROPERTIES.map(card).join('');
+
+  /* Photo introuvable : on la retire pour laisser le fond aux couleurs de la charte.
+     (Pas d'attribut onerror dans le HTML, pour permettre une CSP stricte.) */
+  document.addEventListener('error', function (e) {
+    if (e.target.tagName === 'IMG' && e.target.closest('.property__media, .split__media')) e.target.remove();
+  }, true);
 
   /* ---------------- Filtres ---------------- */
   var state = { type: '', q: '', city: '', min: 0, max: Infinity };

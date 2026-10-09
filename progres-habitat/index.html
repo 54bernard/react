@@ -115,7 +115,7 @@
           <div class="field">
             <svg><use href="#i-search"/></svg>
             <label for="q" class="visually-hidden">Rechercher un bien</label>
-            <input class="input input--icon" id="q" name="q" type="search" placeholder="Rechercher un bien (ex. villa Ouaga 2000)…">
+            <input class="input input--icon" id="q" name="q" type="search" maxlength="100" placeholder="Rechercher un bien (ex. villa Ouaga 2000)…">
           </div>
         </div>
         <div class="search__row search__row--filters">
@@ -197,7 +197,7 @@
 
       <!-- Les cartes sont générées par js/main.js à partir de la liste PROPERTIES -->
       <div class="listings" id="listings" aria-live="polite"></div>
-      <p class="listings__empty" id="listings-empty" hidden style="text-align:center">Aucun bien ne correspond à votre recherche pour le moment.</p>
+      <p class="listings__empty" id="listings-empty" hidden>Aucun bien ne correspond à votre recherche pour le moment.</p>
 
       <div class="listings__more">
         <a class="btn btn--tertiary" href="#contact">En savoir plus</a>
@@ -254,7 +254,7 @@
   <section class="section section--accent" id="diaspora" aria-labelledby="diaspora-title">
     <div class="container split">
       <div class="split__media">
-        <img src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1200&q=80" alt="Villa moderne avec piscine au coucher du soleil" loading="lazy" onerror="this.remove()">
+        <img src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1200&q=80" alt="Villa moderne avec piscine au coucher du soleil" loading="lazy">
       </div>
       <div>
         <span class="section__eyebrow">Diaspora</span>
@@ -322,10 +322,10 @@
         <input type="hidden" name="subject" value="Nouvelle demande de visite — Progrès Habitat">
         <p hidden><label>Ne pas remplir : <input name="bot-field"></label></p>
         <div class="form__row">
-          <div><label for="c-name">Nom complet</label><input class="input" id="c-name" name="name" required autocomplete="name"></div>
-          <div><label for="c-phone">Téléphone / WhatsApp</label><input class="input" id="c-phone" name="phone" type="tel" required autocomplete="tel"></div>
+          <div><label for="c-name">Nom complet</label><input class="input" id="c-name" name="name" required maxlength="80" autocomplete="name"></div>
+          <div><label for="c-phone">Téléphone / WhatsApp</label><input class="input" id="c-phone" name="phone" type="tel" required maxlength="25" pattern="[0-9+ ().-]{8,25}" autocomplete="tel"></div>
         </div>
-        <div><label for="c-email">E-mail</label><input class="input" id="c-email" name="email" type="email" autocomplete="email"></div>
+        <div><label for="c-email">E-mail</label><input class="input" id="c-email" name="email" type="email" maxlength="120" autocomplete="email"></div>
         <div class="form__row">
           <div>
             <label for="c-type">Type de bien</label>
@@ -336,7 +336,7 @@
           </div>
           <div><label for="c-date">Date de visite souhaitée</label><input class="input" id="c-date" name="date" type="date"></div>
         </div>
-        <div><label for="c-msg">Votre message</label><textarea class="input" id="c-msg" name="message" rows="4" placeholder="Référence du bien, budget, quartier souhaité…"></textarea></div>
+        <div><label for="c-msg">Votre message</label><textarea class="input" id="c-msg" name="message" rows="4" maxlength="2000" placeholder="Référence du bien, budget, quartier souhaité…"></textarea></div>
         <button class="btn btn--secondary btn--block" type="submit"><svg><use href="#i-calendar"/></svg> Demander une visite</button>
         <p class="form__note">Vos informations restent confidentielles et ne sont utilisées que pour vous recontacter.</p>
         <div class="alert alert--success" id="contact-ok" role="status" hidden>Merci ! Votre demande a bien été envoyée, un conseiller vous recontacte rapidement.</div>

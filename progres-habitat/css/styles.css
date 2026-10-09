@@ -454,3 +454,4 @@ textarea.input { height: auto; padding: 14px 16px; resize: vertical; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; scroll-behavior: auto !important; }
 }
+.listings__empty { text-align: center; }
