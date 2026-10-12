@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Charte graphique — Progrès Habitat</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 18px; }
+    .swatch { border-radius: var(--ph-radius); overflow: hidden; border: 1px solid var(--ph-border); background: var(--ph-white); }
+    .swatch div { height: 80px; }
+    .swatch p { margin: 0; padding: 10px 12px; font-size: 13px; }
+    .swatch strong { display: block; font-family: var(--ph-font-title); }
+    .row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-bottom: 18px; }
+    .guide h2 { font-size: 22px; margin: 48px 0 18px; }
+    .type-sample { font-size: 15px; }
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a class="brand" href="index.html">
+      <img src="assets/logo.svg" alt="" width="56" height="45">
+      <span><span class="brand__name">PROGRÈS <span>HABITAT</span></span><span class="brand__tagline">Construire aujourd'hui un meilleur demain</span></span>
+    </a>
+    <a class="btn btn--tertiary btn--sm" href="index.html">← Retour au site</a>
+  </div>
+</header>
+
+<main class="section section--light guide">
+  <div class="container">
+    <h1>Charte graphique</h1>
+    <p class="section__lead">Référence à respecter sur toutes les pages. Les valeurs sont définies une seule fois dans <code>css/styles.css</code> (variables <code>--ph-*</code>).</p>
+
+    <h2>Couleurs</h2>
+    <div class="swatches">
+      <div class="swatch"><div style="background:var(--ph-petrol)"></div><p><strong>Bleu pétrole</strong>Principale · #0F5D5E</p></div>
+      <div class="swatch"><div style="background:var(--ph-orange)"></div><p><strong>Orange doré</strong>Accent · #F59E0B</p></div>
+      <div class="swatch"><div style="background:var(--ph-anthracite)"></div><p><strong>Anthracite</strong>Texte · #1F2937</p></div>
+      <div class="swatch"><div style="background:var(--ph-gray-light)"></div><p><strong>Gris clair</strong>Fond · #F3F4F6</p></div>
+      <div class="swatch"><div style="background:var(--ph-white)"></div><p><strong>Blanc</strong>Fond · #FFFFFF</p></div>
+      <div class="swatch"><div style="background:var(--ph-success)"></div><p><strong>Vert clair</strong>Succès · #10B981</p></div>
+      <div class="swatch"><div style="background:var(--ph-alert)"></div><p><strong>Rouge</strong>Alerte · #EF4444</p></div>
+      <div class="swatch"><div style="background:var(--ph-info)"></div><p><strong>Bleu</strong>Information · #3B82F6</p></div>
+      <div class="swatch"><div style="background:var(--ph-warning)"></div><p><strong>Jaune</strong>Avertissement · #FACC15</p></div>
+    </div>
+
+    <h2>Typographies</h2>
+    <p style="font-family:var(--ph-font-title);font-weight:700;font-size:32px;margin:0">Poppins Bold — Titres</p>
+    <p style="font-family:var(--ph-font-title);font-weight:600;font-size:22px">Poppins SemiBold — Sous-titres</p>
+    <p class="type-sample">Inter Regular — Textes courants. Aa Bb Cc Dd Ee Ff Gg 0123456789</p>
+    <p class="type-sample" style="font-weight:500">Inter Medium — Libellés, navigation, métadonnées.</p>
+
+    <h2>Boutons</h2>
+    <div class="row">
+      <a class="btn btn--primary" href="#">Voir les biens <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <a class="btn btn--secondary" href="#">Demander une visite</a>
+      <a class="btn btn--whatsapp" href="#">Contacter sur WhatsApp</a>
+      <a class="btn btn--tertiary" href="#">En savoir plus</a>
+    </div>
+
+    <h2>Badges / statuts</h2>
+    <div class="row">
+      <span class="badge badge--disponible">Disponible</span>
+      <span class="badge badge--reserve">Réservé</span>
+      <span class="badge badge--vendu">Vendu</span>
+      <span class="badge badge--loue">Loué</span>
+    </div>
+    <div class="row">
+      <span class="badge badge--une">À la une</span>
+      <span class="badge badge--nouveau">Nouveau</span>
+      <span class="badge badge--exclusivite">Exclusivité</span>
+      <span class="badge badge--bonne-affaire">Bonne affaire</span>
+      <span class="badge badge--urgent">Urgent</span>
+    </div>
+
+    <h2>Sections</h2>
+    <div class="swatches">
+      <div class="swatch"><div class="section--light" style="border-bottom:1px solid var(--ph-border)"></div><p><strong>.section--light</strong>Fond blanc</p></div>
+      <div class="swatch"><div class="section--neutral"></div><p><strong>.section--neutral</strong>Fond gris clair</p></div>
+      <div class="swatch"><div class="section--premium"></div><p><strong>.section--premium</strong>Fond bleu pétrole</p></div>
+      <div class="swatch"><div class="section--accent"></div><p><strong>.section--accent</strong>Orange doux</p></div>
+    </div>
+
+    <h2>Élément graphique</h2>
+    <svg class="wave" viewBox="0 0 1440 80" preserveAspectRatio="none" style="height:80px" aria-hidden="true">
+      <path d="M0 0h1440v20c-220 40-500 50-760 30S200 10 0 40z" fill="#0F5D5E"/>
+      <path d="M0 40C200 10 420 30 680 50s540 10 760-30v8C1220 70 940 72 680 58S220 30 0 52z" fill="#F59E0B"/>
+    </svg>
+
+    <h2>À éviter</h2>
+    <ul>
+      <li>Ne pas déformer le logo ni changer ses couleurs.</li>
+      <li>Ne pas placer le logo sur un fond peu lisible ; garder une zone de protection égale à la hauteur du « X ».</li>
+      <li>Ne pas ajouter d'effets (ombre, contour, dégradé) au logo.</li>
+      <li>Ne pas utiliser de couleur hors palette : passer toujours par les variables <code>--ph-*</code>.</li>
+    </ul>
+  </div>
+</main>
+</body>
+</html>
